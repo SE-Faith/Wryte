@@ -42,6 +42,16 @@ const userSchema = new mongoose.Schema({
     isActive:{
         type:Boolean,
         default:true
+    },
+    followers: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "User",
+        default: []
+    },
+    following: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "User",
+        default: []
     }
 },
 {

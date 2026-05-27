@@ -11,6 +11,14 @@ import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Import Security Utilities & Middlewares
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
+import mongoSanitize from "express-mongo-sanitize";
+import xssClean from "xss-clean";
+import { globalLimiter } from "./middlewares/rateLimiter.js";
+import { generateCsrf, verifyCsrf } from "./middlewares/csrfMiddleware.js";
+
 // load environment variables
 dotenv.config();
 
@@ -21,6 +29,10 @@ import profileRoute from "./routes/profileRoute.js";
 import categoryRoute from "./routes/categoryRoute.js";
 import tagRoute from "./routes/tagRoute.js";
 import postRoute from "./routes/postRoute.js";
+import notificationRoute from "./routes/notificationRoute.js";
+import likeRoute from "./routes/likeRoute.js";
+import commentRoute from "./routes/commentRoute.js";
+
 
 // Enable CORS for frontend compatibility (e.g. Next.js on port 3000)
 app.use(cors({
@@ -33,6 +45,27 @@ app.use(express.json());
 
 // middleware for URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
+
+// cookie parser to read and verify signed CSRF cookies
+app.use(cookieParser(process.env.JWT_SECRET || "wryte-csrf-secret"));
+
+// Helmet to secure HTTP headers
+app.use(helmet());
+
+// Prevent NoSQL query injection attacks by sanitizing request bodies
+app.use(mongoSanitize());
+
+// Prevent Cross-Site Scripting (XSS) by sanitizing inputs
+app.use(xssClean());
+
+// Apply global rate limiting
+app.use(globalLimiter);
+
+// Endpoint to bootstrap CSRF protection
+app.get("/api/csrf-token", generateCsrf);
+
+// Enforce CSRF verification globally for state-changing requests (POST, PUT, DELETE, PATCH)
+app.use(verifyCsrf);
 
 // load OpenAPI specification
 let openapiSpecification;
@@ -64,6 +97,9 @@ app.use("/profile", profileRoute);
 app.use("/category", categoryRoute);
 app.use("/tag", tagRoute);
 app.use("/post", postRoute);
+app.use("/notification", notificationRoute);
+app.use("/like", likeRoute);
+app.use("/comment", commentRoute);
 
 // Global 404 (Not Found) Handler
 app.use((req, res, next) => {

@@ -1,8 +1,9 @@
 import express from "express";
 const router = express.Router();
 import * as postController from "../controllers/postController.js";
+import { validatePost } from "../middlewares/validationMiddleware.js";
 
-router.post("/create", postController.createPost);
+router.post("/create", validatePost, postController.createPost);
 router.get("/all", postController.getPosts);
 router.get("/:postId", postController.getPostById);
 router.put("/:postId", postController.updatePost);

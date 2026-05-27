@@ -1,4 +1,6 @@
 import Comment from "../models/Comment.js";
+import Post from "../models/Post.js";
+import Notification from "../models/Notification.js";
 
 class CommentService {
     constructor() {}
@@ -41,6 +43,15 @@ class CommentService {
         }
         await comment.remove();
         return comment;
+    }
+
+    async createCommentNotification(postId){
+        const post = await Post.findById(postId);
+        if(!post){
+            throw new Error("Post not found");
+        }
+        const notification = await Notification.create({user:post.user,type:"comment",message:`${post.author.username} commented on your post`});
+        return notification;
     }
 }
 
