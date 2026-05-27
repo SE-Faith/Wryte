@@ -1,4 +1,4 @@
-const Tag = require("../models/Tags");
+import Tag from "../models/Tags.js";
 
 class TagService {
     // create tag
@@ -43,4 +43,4 @@ class TagService {
     }
 }
 
-module.exports = new TagService();
+export default new TagService();

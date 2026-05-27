@@ -1,4 +1,4 @@
-const User = require("../models/User");
+import User from "../models/User.js";
 
 class AdminService {
     constructor() {}
@@ -77,4 +77,4 @@ async activateAccount(userId) {
 };
 }
 
-module.exports = new AdminService();
+export default new AdminService();

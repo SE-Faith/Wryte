@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Category = require("./Category");
-const Tag = require("./Tags");
-const Comment = require("./Comment");
+import mongoose from "mongoose";
+import Category from "./Category.js";
+import Tag from "./Tags.js";
+import Comment from "./Comment.js";
 
 const postSchema = new mongoose.Schema({
     title:{
@@ -63,4 +63,4 @@ const postSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("Post", postSchema);
+export default mongoose.model("Post", postSchema);

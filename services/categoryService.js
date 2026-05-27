@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Category = require("../models/Category");
+import mongoose from "mongoose";
+import Category from "../models/Category.js";
 
 class CategoryService {
     constructor() {}
@@ -46,4 +46,4 @@ class CategoryService {
     }
 }
 
-module.exports = new CategoryService();
+export default new CategoryService();

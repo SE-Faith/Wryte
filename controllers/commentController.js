@@ -1,6 +1,6 @@
-const commentService = require("../services/commentService");
+import commentService from "../services/commentService.js";
 
-const createComment = async (req, res) => {
+export const createComment = async (req, res) => {
     try {
         const comment = await commentService.createComment(req.body);
         res.status(201).json({ message: "Comment created successfully", comment });
@@ -10,7 +10,7 @@ const createComment = async (req, res) => {
     }
 };
 
-const getAllComments = async (req, res) => {
+export const getAllComments = async (req, res) => {
     try {
         const comments = await commentService.getAllComments();
         res.status(200).json({ message: "Comments retrieved successfully", comments });
@@ -20,7 +20,7 @@ const getAllComments = async (req, res) => {
     }
 };
 
-const getCommentById = async (req, res) => {
+export const getCommentById = async (req, res) => {
     try {
         const { commentId } = req.params;
         const comment = await commentService.getCommentById(commentId);
@@ -31,7 +31,7 @@ const getCommentById = async (req, res) => {
     }
 };
 
-const updateComment = async (req, res) => {
+export const updateComment = async (req, res) => {
     try {
         const { commentId } = req.params;
         const comment = await commentService.updateComment(commentId, req.body);
@@ -42,7 +42,7 @@ const updateComment = async (req, res) => {
     }
 };
 
-const deleteComment = async (req, res) => {
+export const deleteComment = async (req, res) => {
     try {
         const { commentId } = req.params;
         const comment = await commentService.deleteComment(commentId);
@@ -51,12 +51,4 @@ const deleteComment = async (req, res) => {
         console.log("Error in commentController.deleteComment:", error);
         res.status(400).json({ message: error.message });
     }
-};
-
-module.exports = {
-    createComment,
-    getAllComments,
-    getCommentById,
-    updateComment,
-    deleteComment
 };

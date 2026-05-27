@@ -1,6 +1,6 @@
-const tagService = require("../services/tagService");
+import tagService from "../services/tagService.js";
 
-const createTag = async (req, res) => {
+export const createTag = async (req, res) => {
     try {
         const tag = await tagService.createTag(req.body);
         res.status(201).json({ message: "Tag created successfully", tag });
@@ -10,7 +10,7 @@ const createTag = async (req, res) => {
     }
 };
 
-const getAllTags = async (req, res) => {
+export const getAllTags = async (req, res) => {
     try {
         const tags = await tagService.getAllTags();
         res.status(200).json({ message: "Tags retrieved successfully", tags });
@@ -20,7 +20,7 @@ const getAllTags = async (req, res) => {
     }
 };
 
-const getTagById = async (req, res) => {
+export const getTagById = async (req, res) => {
     try {
         const { tagId } = req.params;
         const tag = await tagService.getTagById(tagId);
@@ -31,7 +31,7 @@ const getTagById = async (req, res) => {
     }
 };
 
-const updateTag = async (req, res) => {
+export const updateTag = async (req, res) => {
     try {
         const { tagId } = req.params;
         const tag = await tagService.updateTag(tagId, req.body);
@@ -42,7 +42,7 @@ const updateTag = async (req, res) => {
     }
 };
 
-const deleteTag = async (req, res) => {
+export const deleteTag = async (req, res) => {
     try {
         const { tagId } = req.params;
         const tag = await tagService.deleteTag(tagId);
@@ -51,12 +51,4 @@ const deleteTag = async (req, res) => {
         console.log("Error in tagController.deleteTag:", error);
         res.status(400).json({ message: error.message });
     }
-};
-
-module.exports = {
-    createTag,
-    getAllTags,
-    getTagById,
-    updateTag,
-    deleteTag
 };

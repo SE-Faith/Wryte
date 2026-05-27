@@ -1,4 +1,4 @@
-const Comment = require("../models/Comment");
+import Comment from "../models/Comment.js";
 
 class CommentService {
     constructor() {}
@@ -44,4 +44,4 @@ class CommentService {
     }
 }
 
-module.exports = new CommentService();
+export default new CommentService();

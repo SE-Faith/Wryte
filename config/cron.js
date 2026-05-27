@@ -1,9 +1,9 @@
 // config/cron.js
-const cron = require('node-cron');
-const Post = require('../models/Post');
+import cron from 'node-cron';
+import Post from '../models/Post.js';
 
-// Schedule to run every hour for testing
-cron.schedule('0 * * * *', async () => {
+// Schedule to run every day for testing
+cron.schedule('0 0 * * *', async () => {
   try {
     // Find posts that are scheduled for tomorrow or earlier
     const postsToPublish = await Post.find({
@@ -23,4 +23,4 @@ cron.schedule('0 * * * *', async () => {
   }
 });
 
-console.log('Cron job scheduled to run every hour');
+console.log('Cron job scheduled to run every day at midnight');

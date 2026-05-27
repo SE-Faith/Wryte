@@ -1,4 +1,4 @@
-const User = require("../models/User");
+import User from "../models/User.js";
 
 class ProfileService {
     constructor() {}
@@ -21,4 +21,4 @@ class ProfileService {
    
 }
 
-module.exports = new ProfileService();
+export default new ProfileService();

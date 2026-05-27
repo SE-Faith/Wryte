@@ -1,6 +1,6 @@
-const postService = require("../services/postService");
+import postService from "../services/postService.js";
 
-const createPost = async (req, res) => {
+export const createPost = async (req, res) => {
     try {
         const post = await postService.createPost(req.body);
         res.status(201).json({ message: "Post created successfully", post });
@@ -10,7 +10,7 @@ const createPost = async (req, res) => {
     }
 };
 
-const getPosts = async (req, res) => {
+export const getPosts = async (req, res) => {
     try {
         const posts = await postService.getPosts(req.query);
         res.status(200).json({ message: "Posts retrieved successfully", posts });
@@ -20,7 +20,7 @@ const getPosts = async (req, res) => {
     }
 };
 
-const getPostById = async (req, res) => {
+export const getPostById = async (req, res) => {
     try {
         const { postId } = req.params;
         const post = await postService.getPostById(postId);
@@ -31,7 +31,7 @@ const getPostById = async (req, res) => {
     }
 };
 
-const updatePost = async (req, res) => {
+export const updatePost = async (req, res) => {
     try {
         const { postId } = req.params;
         const post = await postService.updatePost(postId, req.body);
@@ -42,7 +42,7 @@ const updatePost = async (req, res) => {
     }
 };
 
-const deletePost = async (req, res) => {
+export const deletePost = async (req, res) => {
     try {
         const { postId } = req.params;
         const post = await postService.deletePost(postId);
@@ -51,12 +51,4 @@ const deletePost = async (req, res) => {
         console.log("Error in postController.deletePost:", error);
         res.status(400).json({ message: error.message });
     }
-};
-
-module.exports = {
-    createPost,
-    getPosts,
-    getPostById,
-    updatePost,
-    deletePost
 };

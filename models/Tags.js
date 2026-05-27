@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const tagSchema = new mongoose.Schema({
     name:{
@@ -19,4 +19,4 @@ const tagSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("Tag", tagSchema);
+export default mongoose.model("Tag", tagSchema);

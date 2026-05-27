@@ -1,21 +1,26 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const path = require("path");
-const swaggerUi = require("swagger-ui-express");
-const YAML = require("yamljs");
-const connectDB = require("./config/database");
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import path from "path";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
+import connectDB from "./config/database.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // load environment variables
 dotenv.config();
 
 const app = express();
 
-const authRoute = require("./routes/authRoute");
-const profileRoute = require("./routes/profileRoute");
-const categoryRoute = require("./routes/categoryRoute");
-const tagRoute = require("./routes/tagRoute");
-const postRoute = require("./routes/postRoute");
+import authRoute from "./routes/authRoute.js";
+import profileRoute from "./routes/profileRoute.js";
+import categoryRoute from "./routes/categoryRoute.js";
+import tagRoute from "./routes/tagRoute.js";
+import postRoute from "./routes/postRoute.js";
 
 // Enable CORS for frontend compatibility (e.g. Next.js on port 3000)
 app.use(cors({
@@ -78,4 +83,4 @@ app.use((err, req, res, next) => {
     });
 });
 
-module.exports = app;
+export default app;

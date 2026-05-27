@@ -1,7 +1,7 @@
 // create server
-const http = require("http");
-const app = require("./app");
-const cron = require("./config/cron");
+import http from "http";
+import app from "./app.js";
+import "./config/cron.js";
 
 const server = http.createServer(app);
 

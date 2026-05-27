@@ -1,6 +1,6 @@
-const User = require("../models/User");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import User from "../models/User.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 
 class AuthServices{
@@ -68,4 +68,4 @@ class AuthServices{
     }
 }
 
-module.exports = new AuthServices();    
+export default new AuthServices();

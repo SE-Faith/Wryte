@@ -1,4 +1,4 @@
-const Post = require("../models/Post");
+import Post from "../models/Post.js";
 
 class PostService {
     // create post
@@ -137,4 +137,4 @@ async getPosts(queryParams) {
     
 }
 
-module.exports = new PostService();
+export default new PostService();

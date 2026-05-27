@@ -1,12 +1,12 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const adminController = require("../controllers/adminController");
-const { verifyToken } = require("../middlewares/authMiddleware");
-const authorizeRole = require("../middlewares/roleMiddleware");
+import * as adminController from "../controllers/adminController.js";
+import { verifyToken } from "../middlewares/authMiddleware.js";
+import authorizeRole from "../middlewares/roleMiddleware.js";
 
 router.get("/user/:userId", verifyToken, authorizeRole(["admin"]), adminController.getUser);
 router.get("/all", verifyToken, authorizeRole(["admin"]), adminController.getAllUsers);
 router.put("/suspend/:userId", verifyToken, authorizeRole(["admin"]), adminController.suspendUser);
 router.put("/ban/:userId", verifyToken, authorizeRole(["admin"]), adminController.banUser);
 
-module.exports = router;
+export default router;
