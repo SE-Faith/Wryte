@@ -33,6 +33,16 @@ export const verifyCsrf = (req, res, next) => {
         return next();
     }
 
+    // Exclude public login & registration endpoints, and requests authenticated explicitly via Authorization headers
+    // (Header-based authentication is natively immune to CSRF forgery attacks)
+    if (
+        req.path.startsWith("/auth/login") || 
+        req.path.startsWith("/auth/register") || 
+        req.headers.authorization
+    ) {
+        return next();
+    }
+
     // Extract CSRF token from the custom header
     const clientToken = req.headers["x-csrf-token"] || req.headers["x-xsrf-token"];
 

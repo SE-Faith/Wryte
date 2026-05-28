@@ -14,8 +14,8 @@ const __dirname = dirname(__filename);
 // Import Security Utilities & Middlewares
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
-import mongoSanitize from "express-mongo-sanitize";
-import xssClean from "xss-clean";
+import { nosqlSanitizer } from "./middlewares/nosqlSanitizer.js";
+import { xssSanitizer } from "./middlewares/xssSanitizer.js";
 import { globalLimiter } from "./middlewares/rateLimiter.js";
 import { generateCsrf, verifyCsrf } from "./middlewares/csrfMiddleware.js";
 
@@ -52,11 +52,11 @@ app.use(cookieParser(process.env.JWT_SECRET || "wryte-csrf-secret"));
 // Helmet to secure HTTP headers
 app.use(helmet());
 
-// Prevent NoSQL query injection attacks by sanitizing request bodies
-app.use(mongoSanitize());
+// Prevent NoSQL query injection attacks by sanitizing request bodies (Express 5 compatible)
+app.use(nosqlSanitizer);
 
-// Prevent Cross-Site Scripting (XSS) by sanitizing inputs
-app.use(xssClean());
+// Prevent Cross-Site Scripting (XSS) by sanitizing inputs (Express 5 compatible)
+app.use(xssSanitizer);
 
 // Apply global rate limiting
 app.use(globalLimiter);
