@@ -12,7 +12,8 @@ export const createComment = async (req, res) => {
 
 export const getAllComments = async (req, res) => {
     try {
-        const comments = await commentService.getAllComments();
+        const comments = await commentService.getAllComments(req.query);
+
         res.status(200).json({ message: "Comments retrieved successfully", comments });
     } catch (error) {
         console.log("Error in commentController.getAllComments:", error);

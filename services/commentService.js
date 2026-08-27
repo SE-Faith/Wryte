@@ -12,11 +12,17 @@ class CommentService {
         return comment;
     }
 
-    // get all comments
-    async getAllComments() {
-        const comments = await Comment.find();
+    async getAllComments(queryParams = {}) {
+        const filter = {};
+        if (queryParams.postId) {
+            filter.post = queryParams.postId;
+        }
+        const comments = await Comment.find(filter)
+            .populate("author", "name displayName avatar")
+            .sort({ createdAt: -1 });
         return comments;
     }
+
 
     // get comment by id
     async getCommentById(commentId) {

@@ -9,6 +9,8 @@ import { verifyToken } from "../middlewares/authMiddleware.js";
 // Basic profile operations
 router.put("/update", verifyToken, profileController.updateProfile);
 router.get("/get", verifyToken, profileController.getProfile);
+router.get("/get/:userId", verifyToken, profileController.getPublicProfile);
+
 router.put("/deactivate", verifyToken, profileController.deactivateAccount);
 router.put("/activate", verifyToken, profileController.activateAccount);
 router.delete("/delete", verifyToken, profileController.deleteAccount);
