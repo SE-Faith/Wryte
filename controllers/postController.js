@@ -2,7 +2,13 @@ import postService from "../services/postService.js";
 
 export const createPost = async (req, res) => {
     try {
-        const post = await postService.createPost(req.body);
+        // Strip any client-supplied author or user ID fields to prevent impersonation
+        const { author, user, userId, ...postData } = req.body;
+        
+        // Assign author from authenticated user injected by verifyToken
+        postData.author = req.user.id;
+
+        const post = await postService.createPost(postData);
         res.status(201).json({ message: "Post created successfully", post });
     } catch (error) {
         console.log("Error in postController.createPost:", error);
