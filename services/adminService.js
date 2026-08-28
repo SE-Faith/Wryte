@@ -4,7 +4,7 @@ class AdminService {
     constructor() {}
 
      async getProfile(userId) {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
     if (!user) {
         throw new Error("User not found");
     }
@@ -13,7 +13,7 @@ class AdminService {
 
 
     async deactivateAccount(userId) {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
     if (!user) {
         throw new Error("User not found");
     }
@@ -24,7 +24,7 @@ class AdminService {
 
 // reactivate account
 async activateAccount(userId) {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
     if (!user) {
         throw new Error("User not found");
     }
@@ -35,7 +35,7 @@ async activateAccount(userId) {
 
 
     async deleteAccount(userId) {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
     if (!user) {
         throw new Error("User not found");
     }
@@ -44,7 +44,7 @@ async activateAccount(userId) {
 };
 
     async getUser(userId) {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
     if (!user) {
         throw new Error("User not found");
     }
@@ -52,12 +52,12 @@ async activateAccount(userId) {
 };
 
     async getAllUsers() {
-    const users = await User.find();
+    const users = await User.find().select("-password");
     return users;
 };
 
     async suspendUser(userId) {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
     if (!user) {
         throw new Error("User not found");
     }
@@ -67,7 +67,7 @@ async activateAccount(userId) {
 };
 
     async banUser(userId) {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
     if (!user) {
         throw new Error("User not found");
     }

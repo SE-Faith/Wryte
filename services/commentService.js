@@ -51,12 +51,12 @@ class CommentService {
         return comment;
     }
 
-    async createCommentNotification(postId){
+    async createCommentNotification(postId, commenterName){
         const post = await Post.findById(postId);
         if(!post){
             throw new Error("Post not found");
         }
-        const notification = await Notification.create({user:post.user,type:"comment",message:`${post.author.username} commented on your post`});
+        const notification = await Notification.create({user:post.author,type:"comment",message:`${commenterName} commented on your post`});
         return notification;
     }
 }

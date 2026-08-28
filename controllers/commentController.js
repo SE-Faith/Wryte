@@ -9,6 +9,14 @@ export const createComment = async (req, res) => {
         commentData.author = req.user.id;
 
         const comment = await commentService.createComment(commentData);
+
+        // Trigger notification for the post author
+        try {
+            await commentService.createCommentNotification(commentData.post, req.user.name);
+        } catch (notifErr) {
+            console.error("Failed to create comment notification:", notifErr.message);
+        }
+
         res.status(201).json({ message: "Comment created successfully", comment });
     } catch (error) {
         console.log("Error in commentController.createComment:", error);

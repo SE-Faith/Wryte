@@ -4,6 +4,14 @@ export const likePost = async (req, res) => {
     try {
         const { postId } = req.params;
         const like = await likeService.likePost(req.user._id, postId);
+
+        // Trigger notification for the post author
+        try {
+            await likeService.createLikeNotification(postId, req.user.name);
+        } catch (notifErr) {
+            console.error("Failed to create like notification:", notifErr.message);
+        }
+
         res.status(200).json({ message: "Post liked successfully", like });
     } catch (error) {
         console.log("Error in likeController.likePost:", error);

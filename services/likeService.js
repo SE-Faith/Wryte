@@ -19,12 +19,12 @@ class LikeService {
         return likes;
     }
 
-    async createLikeNotification(postId){
+    async createLikeNotification(postId, likerName){
         const post = await Post.findById(postId);
         if(!post){
             throw new Error("Post not found");
         }
-        const notification = await Notification.create({user:post.user,type:"like",message:`${post.author.username} liked your post`});
+        const notification = await Notification.create({user:post.author,type:"like",message:`${likerName} liked your post`});
         return notification;
     }   
 }

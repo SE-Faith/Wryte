@@ -36,8 +36,7 @@ export const verifyCsrf = (req, res, next) => {
     // Exclude public login & registration endpoints, and requests authenticated explicitly via Authorization headers
     // (Header-based authentication is natively immune to CSRF forgery attacks)
     if (
-        req.path.startsWith("/auth/login") || 
-        req.path.startsWith("/auth/register") || 
+        req.path.startsWith("/auth") || 
         req.headers.authorization
     ) {
         return next();

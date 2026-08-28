@@ -8,8 +8,8 @@ class FollowService {
             throw new Error("You cannot follow yourself");
         }
 
-        const follower = await User.findById(followerId);
-        const target = await User.findById(targetId);
+        const follower = await User.findById(followerId).select("-password");
+        const target = await User.findById(targetId).select("-password");
 
         if (!follower || !target) {
             throw new Error("User not found");
@@ -43,8 +43,8 @@ class FollowService {
 
     // Unfollow a user
     async unfollowUser(followerId, targetId) {
-        const follower = await User.findById(followerId);
-        const target = await User.findById(targetId);
+        const follower = await User.findById(followerId).select("-password");
+        const target = await User.findById(targetId).select("-password");
 
         if (!follower || !target) {
             throw new Error("User not found");
@@ -67,7 +67,7 @@ class FollowService {
 
     // Get followers of a user
     async getFollowers(userId) {
-        const user = await User.findById(userId).populate("followers", "name email avatar displayName bio");
+        const user = await User.findById(userId).select("-password").populate("followers", "name email avatar displayName bio");
         if (!user) {
             throw new Error("User not found");
         }
@@ -76,7 +76,7 @@ class FollowService {
 
     // Get following of a user
     async getFollowing(userId) {
-        const user = await User.findById(userId).populate("following", "name email avatar displayName bio");
+        const user = await User.findById(userId).select("-password").populate("following", "name email avatar displayName bio");
         if (!user) {
             throw new Error("User not found");
         }
