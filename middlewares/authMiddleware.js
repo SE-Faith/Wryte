@@ -21,6 +21,9 @@ const verifyToken = async(req,res,next)=>{
         if(!user){
             return res.status(401).json({success:false, message:"User not found"});
         }
+        if(!user.isActive){
+            return res.status(403).json({success:false, message:"Account is inactive. Please verify your email first."});
+        }
         req.user = user;
         next();
     }catch(error){

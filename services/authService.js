@@ -55,6 +55,10 @@ class AuthServices {
             throw new Error("Invalid Email or password");
         }
 
+        if (!user.isActive) {
+            throw new Error("Account is inactive. Please verify your email first.");
+        }
+
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_SECRET,

@@ -30,6 +30,7 @@ async function createAdmin() {
       email: process.env.ADMIN_EMAIL,
       password: hashedPassword,
       role: "admin",
+      isActive: true,
       isVerified: true,
     });
 
