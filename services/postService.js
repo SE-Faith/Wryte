@@ -25,7 +25,7 @@ async getPosts(queryParams) {
   const sort = queryParams.sort || "-createdAt";
 
   // Build query
-  let query = { status: "PUBLISHED" };
+  let query = { status: "published" };
 
   // Search
   if (search) {
@@ -103,7 +103,7 @@ async getPosts(queryParams) {
         if (!post) {
             throw new Error("Post not found");
         }
-        await post.remove();
+        await post.deleteOne();
         return post;
     }
 
@@ -113,7 +113,7 @@ async getPosts(queryParams) {
         if (!post) {
             throw new Error("Post not found");
         }
-        post.status = "saved";
+        post.status = "draft";
         await post.save();
         return post;
     }

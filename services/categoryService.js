@@ -41,7 +41,7 @@ class CategoryService {
         if (!category) {
             throw new Error("Category not found");
         }
-        await category.remove();
+        await category.deleteOne();
         return category;
     }
 }

@@ -38,7 +38,7 @@ class TagService {
         if (!tag) {
             throw new Error("Tag not found");
         }
-        await tag.remove();
+        await tag.deleteOne();
         return tag;
     }
 }

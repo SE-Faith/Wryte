@@ -47,7 +47,7 @@ class CommentService {
         if (!comment) {
             throw new Error("Comment not found");
         }
-        await comment.remove();
+        await comment.deleteOne();
         return comment;
     }
 
