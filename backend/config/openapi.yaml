@@ -1,0 +1,406 @@
+openapi: 3.0.0
+info:
+  title: Wryte Blog API Documentation
+  version: 1.0.0
+  description: |
+    Welcome to the backend API specification for **Wryte**, a modern, premium blogging platform.
+    
+    Through this API, developers can authenticate, manage posts, create categories, and publish content.
+    
+    ### Authentication
+    All protected endpoints require authorization headers using the **Bearer Token** scheme:
+    `Authorization: Bearer <your-jwt-token>`
+servers:
+  - url: http://localhost:4000
+    description: Development Server
+paths:
+  /api/health:
+    get:
+      summary: Health Check
+      description: Returns the status of the server and database connection.
+      responses:
+        '200':
+          description: Server is healthy and running.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  database:
+                    type: string
+                    example: "connected"
+                  timestamp:
+                    type: string
+                    example: "2026-05-24T15:00:00Z"
+        '503':
+          description: Service Unavailable (e.g., database disconnected).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      description: Create a brand new blogger profile.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: "Jane Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "jane.doe@wryte.com"
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: "securePassword123"
+      responses:
+        '201':
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "User registered successfully"
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "60b9f5f08819c900155b9abc"
+                      name:
+                        type: string
+                        example: "Jane Doe"
+                      email:
+                        type: string
+                        example: "jane.doe@wryte.com"
+        '400':
+          description: Invalid input or user already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/login:
+    post:
+      summary: Authenticate user / Login
+      description: Verifies user credentials and issues a JSON Web Token (JWT).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "jane.doe@wryte.com"
+                password:
+                  type: string
+                  format: password
+                  example: "securePassword123"
+      responses:
+        '200':
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYjlmNWYwODgxOWM5MDAxNTViOWFiYyIsImlhdCI6MTYyMjkwODgwMCwiZXhwIjoxNjIyOTk1MjAwfQ.xyz..."
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "60b9f5f08819c900155b9abc"
+                      name:
+                        type: string
+                        example: "Jane Doe"
+                      email:
+                        type: string
+                        example: "jane.doe@wryte.com"
+        '401':
+          description: Invalid credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/posts:
+    get:
+      summary: Retrieve all blog posts
+      description: Returns a list of all published blog posts, sorted by creation date descending. Supports search filters.
+      parameters:
+        - name: search
+          in: query
+          description: Filter posts by title or content matches
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of posts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+    post:
+      summary: Create a new blog post
+      description: Publish a new blog post. Requires authentication.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+              properties:
+                title:
+                  type: string
+                  example: "Unlocking Creativity: A Beginner's Guide"
+                content:
+                  type: string
+                  example: "In this post we explore the psychological barriers to creativity..."
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ["creativity", "writing", "guide"]
+      responses:
+        '201':
+          description: Post created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '401':
+          description: Unauthorized access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/posts/{id}:
+    get:
+      summary: Get post by ID
+      description: Retrieves a single post's details.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The post ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Post not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a post
+      description: Modify the title, content, or tags of an existing blog post. Only the original author can edit their post.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The post ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Unlocking Creativity: An Advanced Guide"
+                content:
+                  type: string
+                  example: "This updated version goes deeper into creative exercises..."
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ["creativity", "advanced"]
+      responses:
+        '200':
+          description: Post updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '401':
+          description: Unauthorized access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden to edit others' posts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Post not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a post
+      description: Permanently remove a blog post. Only the original author can delete.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The post ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Post deleted successfully"
+        '401':
+          description: Unauthorized access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden to delete others' posts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Post not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Post:
+      type: object
+      required:
+        - id
+        - title
+        - content
+        - author
+      properties:
+        id:
+          type: string
+          example: "60b9f5f08819c900155b9abc"
+        title:
+          type: string
+          example: "Unlocking Creativity: A Beginner's Guide"
+        content:
+          type: string
+          example: "In this post we explore the psychological barriers to creativity..."
+        author:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "60b9f5f08819c900155b9abc"
+            name:
+              type: string
+              example: "Jane Doe"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["creativity", "writing", "guide"]
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-05-24T15:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-05-24T15:00:00.000Z"
+    Error:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "An unexpected error occurred"
+        errors:
+          type: array
+          items:
+            type: string
+          example: ["Field 'email' is invalid"]
