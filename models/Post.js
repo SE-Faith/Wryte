@@ -1,0 +1,70 @@
+import mongoose from "mongoose";
+import Category from "./Category.js";
+import Tag from "./Tags.js";
+import Comment from "./Comment.js";
+
+const postSchema = new mongoose.Schema({
+    title:{
+        type:String,
+        required:true
+    },
+    content:{
+        type:String,
+        required:true
+    },
+    image:{
+        type:String,
+        default:null
+    },
+    author:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required:true
+    },
+    category:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Category",
+        required:true
+    },
+    tags:{
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:"Tag",
+        default:[]
+    },
+    status:{
+        type:String,
+        enum:["draft","published","archived","scheduled"],
+        default:"draft"
+    },
+    scheduledAt:{
+        type:Date,
+        default:null
+    },
+    publishedAt:{
+        type:Date,
+        default:null
+    },
+    views:{
+        type:Number,
+        default:0
+    },
+    likes:{
+        type:Number,
+        default:0
+    },
+    comments:{
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:"Comment",
+        default:[]
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now
+    },
+    updatedAt:{
+        type:Date,
+        default:Date.now
+    }
+});
+
+export default mongoose.model("Post", postSchema);
