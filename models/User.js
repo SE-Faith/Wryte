@@ -43,6 +43,18 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
+    isSuspended:{
+        type:Boolean,
+        default:false
+    },
+    isBanned:{
+        type:Boolean,
+        default:false
+    },
+    isVerified:{
+        type:Boolean,
+        default:false
+    },
     followers: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "User",
