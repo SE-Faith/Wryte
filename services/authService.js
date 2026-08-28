@@ -1,10 +1,8 @@
 import User from "../models/User.js";
+import OTP from "../models/OTP.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendMail } from "../utils/sendMail.js";
-
-const resetTokens = new Map();
-const verificationCodes = new Map();
 
 class AuthServices {
     async register(data) {
@@ -25,7 +23,15 @@ class AuthServices {
 
         // Create random 6-digit OTP for email verification
         const code = Math.floor(100000 + Math.random() * 900000).toString();
-        verificationCodes.set(email, code);
+        
+        // Save to database with 150s TTL
+        await OTP.deleteMany({ email, type: "email_verification" });
+        await OTP.create({
+            email,
+            code,
+            type: "email_verification",
+            expiresAt: new Date(Date.now() + 150 * 1000)
+        });
 
         try {
             await sendMail(email, "Wryte - Verify Your Email", `Welcome to Wryte! Your email verification OTP is: ${code}`);
@@ -90,35 +96,54 @@ class AuthServices {
             throw new Error("No user found with this email");
         }
         const code = Math.floor(100000 + Math.random() * 900000).toString();
-        resetTokens.set(email, code);
+        
+        // Context-aware logic: if the user is unverified (isActive: false), resending OTP is for email verification.
+        // Otherwise, it is for password reset.
+        const type = user.isActive ? "password_reset" : "email_verification";
+        const emailSubject = user.isActive ? "Wryte - Reset Password Code" : "Wryte - Verify Your Email";
+        const emailBody = user.isActive 
+            ? `Your password reset code is: ${code}`
+            : `Welcome to Wryte! Your email verification OTP is: ${code}`;
+
+        await OTP.deleteMany({ email, type });
+        await OTP.create({
+            email,
+            code,
+            type,
+            expiresAt: new Date(Date.now() + 150 * 1000)
+        });
 
         try {
-            await sendMail(email, "Wryte - Reset Password Code", `Your password reset code is: ${code}`);
+            await sendMail(email, emailSubject, emailBody);
         } catch (err) {
-            console.log("Email reset code sending failed. Code is:", code);
+            console.log("Email code sending failed. Code is:", code);
         }
         return { email, code };
     }
 
     async resetPassword(token, newPassword) {
-        let email = null;
-        for (const [e, c] of resetTokens.entries()) {
-            if (c === token) {
-                email = e;
-                break;
-            }
-        }
-        if (!email) {
+        const otpRecord = await OTP.findOne({
+            code: token,
+            type: "password_reset",
+            expiresAt: { $gt: new Date() }
+        });
+
+        if (!otpRecord) {
             throw new Error("Invalid or expired reset code");
         }
+
+        const email = otpRecord.email;
         const user = await User.findOne({ email });
         if (!user) {
             throw new Error("User not found");
         }
+
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         user.password = hashedPassword;
         await user.save();
-        resetTokens.delete(email);
+
+        await OTP.deleteMany({ email, type: "password_reset" });
+
         return user;
     }
 
@@ -127,13 +152,23 @@ class AuthServices {
         if (!user) {
             throw new Error("User not found");
         }
-        const storedCode = verificationCodes.get(email);
-        if (storedCode && storedCode !== code) {
-            throw new Error("Invalid verification code");
+
+        const otpRecord = await OTP.findOne({
+            email,
+            code,
+            type: "email_verification",
+            expiresAt: { $gt: new Date() }
+        });
+
+        if (!otpRecord) {
+            throw new Error("Invalid or expired verification code");
         }
+
         user.isActive = true;
         await user.save();
-        verificationCodes.delete(email);
+
+        await OTP.deleteMany({ email, type: "email_verification" });
+
         return user;
     }
 }
