@@ -84,23 +84,24 @@ async getPosts(queryParams) {
     query.author = author;
   }
 
-  // Fetch posts
+  // Fetch posts with references populated & lean JS object execution
   const posts = await Post.find(query)
+    .populate("author", "name email avatar displayName")
+    .populate("category", "name")
+    .populate("tags", "name")
     .skip(skip)
     .limit(limit)
-    .sort(sort);
+    .sort(sort)
+    .lean();
 
   // Count total posts
-  const total =
-    await Post.countDocuments(query);
+  const total = await Post.countDocuments(query);
 
   return {
     page,
     limit,
     total,
-    totalPages: Math.ceil(
-      total / limit
-    ),
+    totalPages: Math.ceil(total / limit),
     posts,
   };
 };

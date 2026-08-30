@@ -67,4 +67,9 @@ const postSchema = new mongoose.Schema({
     }
 });
 
+// Create database indexes for fast query performance
+postSchema.index({ status: 1, createdAt: -1 });
+postSchema.index({ category: 1, status: 1, createdAt: -1 });
+postSchema.index({ author: 1, status: 1, createdAt: -1 });
+
 export default mongoose.model("Post", postSchema);

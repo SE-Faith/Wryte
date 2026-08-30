@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore, useThemeStore, useNotificationStore } from "../lib/store";
@@ -13,6 +11,13 @@ export default function Navbar() {
   const { unreadCount } = useNotificationStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentUser = mounted ? user : null;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -55,7 +60,7 @@ export default function Navbar() {
         {/* Right Side Navigation */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           {/* Create Post button for authenticated users */}
-          {user && (
+          {currentUser && (
             <Link
               href="/posts/create"
               className="hidden sm:flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
@@ -74,7 +79,7 @@ export default function Navbar() {
             {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          {user ? (
+          {currentUser ? (
             <>
               {/* Notification icon with count badge */}
               <Link
@@ -96,8 +101,8 @@ export default function Navbar() {
                   className="flex items-center gap-1 focus:outline-none"
                 >
                   <img
-                    src={user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                    alt={user.name}
+                    src={currentUser.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    alt={currentUser.name}
                     className="w-8 h-8 rounded-full border border-zinc-200 dark:border-zinc-800 object-cover shadow-sm"
                   />
                 </button>
@@ -112,14 +117,14 @@ export default function Navbar() {
                     <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-50 p-2 py-3 animate-fade-in">
                       <div className="px-3 py-2 border-b border-zinc-100 dark:border-zinc-800 mb-2">
                         <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-100 truncate">
-                          {user.displayName || user.name}
+                          {currentUser.displayName || currentUser.name}
                         </p>
                         <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
-                          {user.email}
+                          {currentUser.email}
                         </p>
                       </div>
 
-                      {user.role === "admin" && (
+                      {currentUser.role === "admin" && (
                         <Link
                           href="/admin/dashboard"
                           onClick={() => setDropdownOpen(false)}
@@ -131,7 +136,7 @@ export default function Navbar() {
                       )}
 
                       <Link
-                        href={`/profile/${user._id}`}
+                        href={`/profile/${currentUser._id}`}
                         onClick={() => setDropdownOpen(false)}
                         className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                       >

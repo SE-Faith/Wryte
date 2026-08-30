@@ -19,9 +19,8 @@ export const getCsrfToken = async () => {
   if (csrfTokenPromise) return csrfTokenPromise;
   
   csrfTokenPromise = api.get("/api/csrf-token")
-    .then((res) => res.data.csrfToken)
-    .catch((err) => {
-      console.error("Failed to bootstrap CSRF token:", err);
+    .then((res) => res.data?.csrfToken || null)
+    .catch(() => {
       csrfTokenPromise = null;
       return null;
     });
@@ -41,11 +40,15 @@ api.interceptors.request.use(
     // 2. Inject CSRF Token for state-changing requests
     const stateChangingMethods = ["post", "put", "delete", "patch"];
     if (stateChangingMethods.includes(config.method?.toLowerCase() || "")) {
-      // If we don't have authorization header, the backend strictly requires CSRF double submit
+      // If we don't have authorization header, attempt CSRF double submit
       if (!config.headers.Authorization) {
-        const csrfToken = await getCsrfToken();
-        if (csrfToken) {
-          config.headers["x-csrf-token"] = csrfToken;
+        try {
+          const csrfToken = await getCsrfToken();
+          if (csrfToken) {
+            config.headers["x-csrf-token"] = csrfToken;
+          }
+        } catch {
+          // Silently proceed if backend CSRF endpoint is unreachable
         }
       }
     }
@@ -61,7 +64,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("API error response:", error.response || error.message);
+    if (error.response) {
+      console.warn("API Error:", error.response.status, error.response.data?.message || error.response.data);
+    } else if (error.request) {
+      console.warn("Network Error: Express backend is not running or unreachable at", API_BASE_URL);
+    }
     return Promise.reject(error);
   }
 );

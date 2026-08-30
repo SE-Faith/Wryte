@@ -18,7 +18,7 @@ export default function Providers({ children }) {
     initTheme();
 
     // 2. Fetch double-submit cookie CSRF token in background
-    getCsrfToken();
+    getCsrfToken().catch(() => {});
   }, [initTheme]);
 
   useEffect(() => {
@@ -49,6 +49,7 @@ export default function Providers({ children }) {
       value={{
         revalidateOnFocus: false,
         shouldRetryOnError: false,
+        dedupingInterval: 2000,
       }}
     >
       {children}
