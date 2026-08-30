@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 flex items-center justify-center py-16 px-4 bg-zinc-50 dark:bg-zinc-950">
+      <main className="flex-1 flex items-center justify-center py-16 px-4 bg-white dark:bg-zinc-950">
         <div className="max-w-md w-full p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl glass-panel animate-fade-in">
           <div className="text-center mb-8">
             <div className="w-12 h-12 bg-blue-50 dark:bg-blue-950/40 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">

@@ -40,7 +40,7 @@ export default function Navbar() {
         {/* Search Bar - Hidden on small mobile */}
         <form
           onSubmit={handleSearchSubmit}
-          className="hidden md:flex items-center max-w-md w-full relative bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300"
+          className="hidden md:flex items-center max-w-md w-full relative bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300"
         >
           <Search className="absolute left-4 text-zinc-400" size={18} />
           <input
@@ -58,7 +58,7 @@ export default function Navbar() {
           {user && (
             <Link
               href="/posts/create"
-              className="hidden sm:flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-50 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 px-4 py-2 rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              className="hidden sm:flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
             >
               <PlusCircle size={14} />
               Write Post

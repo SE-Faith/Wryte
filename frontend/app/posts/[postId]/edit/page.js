@@ -103,7 +103,7 @@ export default function EditPostPage({ params }) {
   return (
     <>
       <Navbar />
-      <main className="flex-1 max-w-5xl w-full mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8 bg-zinc-50 dark:bg-zinc-950">
+      <main className="flex-1 max-w-5xl w-full mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8 bg-white dark:bg-zinc-950">
         {/* Breadcrumb */}
         <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-500">
           <span>Wryte</span>

@@ -78,7 +78,7 @@ export default function CreatePostPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 max-w-5xl w-full mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8 bg-zinc-50 dark:bg-zinc-950">
+      <main className="flex-1 max-w-5xl w-full mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8 bg-white dark:bg-zinc-950">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-500">
           <span>Wryte</span>
@@ -162,12 +162,12 @@ export default function CreatePostPage() {
                     placeholder="Once upon a time..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 min-h-[400px] resize-y leading-relaxed"
+                    className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 min-h-[400px] resize-y leading-relaxed"
                     required
                   />
                 ) : (
                   <div
-                    className="rich-text p-6 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl min-h-[400px] text-zinc-800 dark:text-zinc-200 overflow-y-auto leading-relaxed"
+                    className="rich-text p-6 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl min-h-[400px] text-zinc-800 dark:text-zinc-200 overflow-y-auto leading-relaxed"
                     dangerouslySetInnerHTML={{
                       __html: content || "<p class='text-zinc-400 italic'>Nothing to preview yet. Start writing in the 'Write Content' tab...</p>"
                     }}

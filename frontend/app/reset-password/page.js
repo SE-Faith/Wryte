@@ -159,7 +159,7 @@ export default function ResetPasswordPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 flex items-center justify-center py-16 px-4 bg-zinc-50 dark:bg-zinc-950">
+      <main className="flex-1 flex items-center justify-center py-16 px-4 bg-white dark:bg-zinc-950">
         <Suspense fallback={
           <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
         }>

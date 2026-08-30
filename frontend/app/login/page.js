@@ -46,7 +46,7 @@ export default function LoginPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 flex items-center justify-center py-16 px-4 bg-zinc-50 dark:bg-zinc-950">
+      <main className="flex-1 flex items-center justify-center py-16 px-4 bg-white dark:bg-zinc-950">
         <div className="max-w-md w-full p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl glass-panel animate-fade-in">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-black text-zinc-900 dark:text-zinc-50">

@@ -62,28 +62,28 @@ function MainContent() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
       {/* 1. Hero / Welcome Banner */}
       {!searchQuery && selectedCategory === "all" && (
-        <section className="relative rounded-3xl overflow-hidden bg-gradient-to-tr from-zinc-900 to-zinc-800 dark:from-zinc-950 dark:to-zinc-900 text-white p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 border border-zinc-800 animate-fade-in">
+        <section className="relative rounded-3xl overflow-hidden bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 p-8 md:p-12 shadow-md flex flex-col md:flex-row items-center justify-between gap-8 border border-zinc-200 dark:border-zinc-800 animate-fade-in">
           <div className="space-y-4 max-w-xl">
-            <span className="bg-blue-500 text-white text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full shadow-sm">
+            <span className="bg-blue-600 text-white text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full shadow-sm">
               Featured Publication
             </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight text-zinc-900 dark:text-white">
               Publish your passions, your way.
             </h1>
-            <p className="text-zinc-300 text-sm sm:text-base font-medium leading-relaxed">
+            <p className="text-zinc-600 dark:text-zinc-300 text-sm sm:text-base font-medium leading-relaxed">
               Create a unique and beautiful blog inside a premium workspace. Wryte is the easiest place to share powerful insights and discover fresh viewpoints.
             </p>
           </div>
-          <div className="shrink-0 bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md max-w-xs w-full shadow-xl">
-            <h3 className="text-lg font-bold flex items-center gap-2 mb-3 text-zinc-100">
-              <Compass size={18} className="text-blue-400" /> Explore Tags
+          <div className="shrink-0 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50 rounded-2xl p-6 backdrop-blur-md max-w-xs w-full shadow-sm">
+            <h3 className="text-lg font-bold flex items-center gap-2 mb-3 text-zinc-900 dark:text-zinc-100">
+              <Compass size={18} className="text-blue-500" /> Explore Tags
             </h3>
             <div className="flex flex-wrap gap-2">
               {categories.slice(0, 6).map((cat) => (
                 <button
                   key={cat._id}
                   onClick={() => handleCategoryClick(cat._id)}
-                  className="text-xs bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 border border-white/5 px-2.5 py-1.5 rounded-full transition-colors font-medium text-zinc-200"
+                  className="text-xs bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-600 border border-zinc-200 dark:border-zinc-600 px-2.5 py-1.5 rounded-full transition-colors font-medium text-zinc-700 dark:text-zinc-200"
                 >
                   #{cat.name}
                 </button>
@@ -212,9 +212,9 @@ function MainContent() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950">
       <Navbar />
-      <main className="flex-1 bg-zinc-50 dark:bg-zinc-950">
+      <main className="flex-1 bg-white dark:bg-zinc-950">
         <Suspense fallback={
           <div className="max-w-7xl mx-auto px-4 py-8">
             <GridSkeleton count={6} />

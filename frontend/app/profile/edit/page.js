@@ -94,7 +94,7 @@ export default function EditProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 max-w-3xl w-full mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8 bg-zinc-50 dark:bg-zinc-950 animate-fade-in">
+      <main className="flex-1 max-w-3xl w-full mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8 bg-white dark:bg-zinc-950 animate-fade-in">
         {/* Title */}
         <div className="space-y-2">
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 flex items-center gap-2">

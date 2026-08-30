@@ -91,9 +91,9 @@ function BookmarksContent() {
 
 export default function BookmarksPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950">
       <Navbar />
-      <main className="flex-1 bg-zinc-50 dark:bg-zinc-950">
+      <main className="flex-1 bg-white dark:bg-zinc-950">
         <Suspense fallback={
           <div className="max-w-7xl mx-auto px-4 py-8">
             <GridSkeleton count={3} />

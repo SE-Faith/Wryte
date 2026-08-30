@@ -5,7 +5,12 @@ const getLocalStorageItem = (key, defaultValue) => {
   if (typeof window === "undefined") return defaultValue;
   try {
     const item = window.localStorage.getItem(key);
-    return item ? JSON.parse(item) : defaultValue;
+    if (item === null) return defaultValue;
+    try {
+      return JSON.parse(item);
+    } catch {
+      return item;
+    }
   } catch (error) {
     console.error("Error reading localStorage key", key, error);
     return defaultValue;
@@ -51,7 +56,7 @@ export const useAuthStore = create((set) => ({
 
 // 2. Visual Theme & Accent Store
 export const useThemeStore = create((set) => ({
-  theme: getLocalStorageItem("wryte_theme", "light"),
+  theme: "light",
 
   toggleTheme: () => {
     set((state) => {
@@ -73,7 +78,10 @@ export const useThemeStore = create((set) => ({
 
   initTheme: () => {
     if (typeof window === "undefined") return;
-    const currentTheme = getLocalStorageItem("wryte_theme", "light");
+    let currentTheme = getLocalStorageItem("wryte_theme", null);
+    if (!currentTheme) {
+      currentTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
     const root = document.documentElement;
     if (currentTheme === "dark") {
       root.classList.add("dark");

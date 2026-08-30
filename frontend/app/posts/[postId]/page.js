@@ -337,7 +337,7 @@ function PostDetailContent({ params }) {
                 placeholder="Share your thoughts or feedback on this article..."
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-zinc-800 dark:text-zinc-200 min-h-[100px] resize-none"
+                className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-zinc-800 dark:text-zinc-200 min-h-[100px] resize-none"
                 required
               />
               <div className="flex justify-end">
@@ -352,7 +352,7 @@ function PostDetailContent({ params }) {
             </div>
           </form>
         ) : (
-          <div className="text-center p-6 bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl">
+          <div className="text-center p-6 bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl">
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
               Please{" "}
               <Link href="/login" className="font-semibold text-blue-500 hover:text-blue-600">
@@ -428,7 +428,7 @@ function PostDetailContent({ params }) {
                         placeholder="Write a reply..."
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
-                        className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-zinc-800 dark:text-zinc-200 min-h-[60px] resize-none"
+                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-zinc-800 dark:text-zinc-200 min-h-[60px] resize-none"
                         required
                       />
                       <div className="flex justify-end gap-2">
@@ -500,7 +500,7 @@ function PostDetailContent({ params }) {
           })}
 
           {parentComments.length === 0 && (
-            <div className="text-center py-10 bg-zinc-50/50 dark:bg-zinc-900/20 border border-zinc-200/60 dark:border-zinc-800/60 rounded-2xl text-zinc-400 text-sm">
+            <div className="text-center py-10 bg-white dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-800/60 rounded-2xl text-zinc-400 text-sm">
               No discussions yet. Be the first to start the conversation!
             </div>
           )}
@@ -512,9 +512,9 @@ function PostDetailContent({ params }) {
 
 export default function PostDetailPage({ params }) {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950">
       <Navbar />
-      <main className="flex-1 bg-zinc-50 dark:bg-zinc-950">
+      <main className="flex-1 bg-white dark:bg-zinc-950">
         <Suspense fallback={<SinglePostSkeleton />}>
           <PostDetailContent params={params} />
         </Suspense>
