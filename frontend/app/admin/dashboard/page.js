@@ -80,7 +80,7 @@ function AdminDashboardContent() {
       <div className="border-b border-zinc-200 dark:border-zinc-800 pb-4 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
-            <ShieldCheck size={28} className="text-blue-500" />
+            <ShieldCheck size={28} className="text-zinc-900 dark:text-zinc-50" />
             Admin Console
           </h1>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
@@ -104,7 +104,7 @@ function AdminDashboardContent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Widget 1 */}
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-3xl shadow-sm flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-50 dark:bg-blue-950/40 text-blue-500 rounded-full flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 rounded-full flex items-center justify-center shrink-0">
                 <Users size={22} />
               </div>
               <div>
@@ -115,7 +115,7 @@ function AdminDashboardContent() {
 
             {/* Widget 2 */}
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-3xl shadow-sm flex items-center gap-4">
-              <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 rounded-full flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 rounded-full flex items-center justify-center shrink-0">
                 <FileText size={22} />
               </div>
               <div>
@@ -126,7 +126,7 @@ function AdminDashboardContent() {
 
             {/* Widget 3 */}
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-3xl shadow-sm flex items-center gap-4">
-              <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-500 rounded-full flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 rounded-full flex items-center justify-center shrink-0">
                 <Award size={22} />
               </div>
               <div>
@@ -137,7 +137,7 @@ function AdminDashboardContent() {
 
             {/* Widget 4 */}
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-3xl shadow-sm flex items-center gap-4">
-              <div className="w-12 h-12 bg-purple-50 dark:bg-purple-950/40 text-purple-500 rounded-full flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 rounded-full flex items-center justify-center shrink-0">
                 <ShieldCheck size={22} />
               </div>
               <div>
@@ -187,8 +187,8 @@ function AdminDashboardContent() {
                       {/* Role Badge */}
                       <td className="py-4 px-6">
                         <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full ${usr.role === "admin"
-                            ? "bg-blue-50 text-blue-500 border border-blue-100 dark:bg-blue-950/20 dark:border-blue-900/30"
-                            : "bg-zinc-50 text-zinc-500 border border-zinc-200 dark:bg-zinc-850 dark:border-zinc-800"
+                            ? "bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-900 border border-zinc-700 dark:border-zinc-300"
+                            : "bg-zinc-50 text-zinc-500 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700"
                           }`}>
                           {usr.role}
                         </span>
@@ -198,14 +198,14 @@ function AdminDashboardContent() {
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-2">
                           <span className={`w-2 h-2 rounded-full ${usr.isBanned
-                              ? "bg-rose-500"
+                              ? "bg-zinc-900 dark:bg-zinc-100"
                               : usr.isSuspended
-                                ? "bg-amber-500"
+                                ? "bg-zinc-500 dark:bg-zinc-500"
                                 : usr.isActive === false
                                   ? "bg-zinc-300 dark:bg-zinc-700"
-                                  : "bg-emerald-500"
+                                  : "bg-zinc-700 dark:bg-zinc-400"
                             }`} />
-                          <span className="text-xs font-semibold text-zinc-500">
+                          <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
                             {usr.isBanned
                               ? "Banned"
                               : usr.isSuspended
@@ -223,7 +223,7 @@ function AdminDashboardContent() {
                           <button
                             onClick={() => handleSuspend(usr._id)}
                             disabled={usr.isSuspended || usr.isBanned}
-                            className="flex items-center gap-1 bg-amber-500 hover:bg-amber-600 disabled:opacity-30 disabled:pointer-events-none text-white font-bold text-[10px] uppercase px-3 py-1.5 rounded-full transition-all cursor-pointer"
+                            className="flex items-center gap-1 bg-zinc-500 hover:bg-zinc-600 disabled:opacity-30 disabled:pointer-events-none text-white font-bold text-[10px] uppercase px-3 py-1.5 rounded-full transition-all cursor-pointer"
                           >
                             <AlertTriangle size={11} />
                             Suspend
@@ -231,7 +231,7 @@ function AdminDashboardContent() {
                           <button
                             onClick={() => handleBan(usr._id)}
                             disabled={usr.isBanned}
-                            className="flex items-center gap-1 bg-rose-600 hover:bg-rose-700 disabled:opacity-30 disabled:pointer-events-none text-white font-bold text-[10px] uppercase px-3 py-1.5 rounded-full transition-all cursor-pointer"
+                            className="flex items-center gap-1 bg-zinc-900 hover:bg-black disabled:opacity-30 disabled:pointer-events-none text-white font-bold text-[10px] uppercase px-3 py-1.5 rounded-full transition-all cursor-pointer dark:bg-zinc-100 dark:hover:bg-white dark:text-zinc-900"
                           >
                             <Ban size={11} />
                             Ban

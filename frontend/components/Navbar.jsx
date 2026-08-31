@@ -154,7 +154,7 @@ export default function Navbar() {
 
                       <button
                         onClick={handleLogout}
-                        className="mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20"
+                        className="mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                       >
                         <LogOut size={16} />
                         Logout

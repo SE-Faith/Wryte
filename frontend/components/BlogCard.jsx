@@ -126,10 +126,10 @@ export default function BlogCard({ post, onLikeToggle, onBookmarkToggle }) {
             </span>
             <button
               onClick={handleLike}
-              className={`flex items-center gap-1 ${liked ? "text-rose-500" : "text-zinc-500 dark:text-zinc-400"}`}
+              className={`flex items-center gap-1 ${liked ? "text-zinc-900 dark:text-zinc-50" : "text-zinc-500 dark:text-zinc-400"}`}
               aria-label="Like post"
             >
-              <Heart size={13} className={liked ? "fill-rose-500" : ""} />
+              <Heart size={13} className={liked ? "fill-current" : ""} />
               {likesCount}
             </button>
             <button

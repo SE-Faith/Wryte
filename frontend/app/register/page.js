@@ -72,7 +72,7 @@ export default function RegisterPage() {
               <label htmlFor="name" className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                 Full Name
               </label>
-              <div className="relative flex items-center bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300">
+              <div className="relative flex items-center bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus-within:ring-2 focus-within:ring-zinc-900/20 dark:focus-within:ring-zinc-100/20 transition-all duration-300">
                 <User className="absolute left-4 text-zinc-400" size={16} />
                 <input
                   id="name"
@@ -91,7 +91,7 @@ export default function RegisterPage() {
               <label htmlFor="email" className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                 Email Address
               </label>
-              <div className="relative flex items-center bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300">
+              <div className="relative flex items-center bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus-within:ring-2 focus-within:ring-zinc-900/20 dark:focus-within:ring-zinc-100/20 transition-all duration-300">
                 <Mail className="absolute left-4 text-zinc-400" size={16} />
                 <input
                   id="email"
@@ -110,7 +110,7 @@ export default function RegisterPage() {
               <label htmlFor="password" className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                 Password
               </label>
-              <div className="relative flex items-center bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300">
+              <div className="relative flex items-center bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus-within:ring-2 focus-within:ring-zinc-900/20 dark:focus-within:ring-zinc-100/20 transition-all duration-300">
                 <Lock className="absolute left-4 text-zinc-400" size={16} />
                 <input
                   id="password"
@@ -129,7 +129,7 @@ export default function RegisterPage() {
               <label htmlFor="role" className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                 Account Role
               </label>
-              <div className="relative flex items-center bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300">
+              <div className="relative flex items-center bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl focus-within:ring-2 focus-within:ring-zinc-900/20 dark:focus-within:ring-zinc-100/20 transition-all duration-300">
                 <UserCheck className="absolute left-4 text-zinc-400" size={16} />
                 <select
                   id="role"
@@ -147,7 +147,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-4"
+              className="w-full flex items-center justify-center gap-2 bg-zinc-900 hover:bg-black dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 font-semibold py-3.5 px-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-4"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -166,7 +166,7 @@ export default function RegisterPage() {
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="font-semibold text-blue-500 hover:text-blue-600 transition-colors"
+                className="font-semibold text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-50 transition-colors"
               >
                 Log In
               </Link>

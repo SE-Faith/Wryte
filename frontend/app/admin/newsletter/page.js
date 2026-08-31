@@ -46,7 +46,7 @@ function NewsletterAdminContent() {
     if (!currentUser || currentUser.role !== "admin") {
         return (
             <div className="max-w-md mx-auto py-24 px-4 text-center">
-                <ShieldAlert size={48} className="text-rose-500 mx-auto mb-4 animate-bounce" />
+                <ShieldAlert size={48} className="text-zinc-900 dark:text-zinc-100 mx-auto mb-4 animate-bounce" />
                 <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Access Denied</h2>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
                     You do not have administrative privileges to access this page.
@@ -143,8 +143,8 @@ function NewsletterAdminContent() {
                                         <td className="px-4 py-3">
                                             <span
                                                 className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${subscriber.isActive
-                                                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                                        : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
+                                                        ? "bg-zinc-200 text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50"
+                                                        : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
                                                     }`}
                                             >
                                                 {subscriber.isActive ? "Active" : "Inactive"}
@@ -156,7 +156,7 @@ function NewsletterAdminContent() {
                                         <td className="px-4 py-3 text-right">
                                             <button
                                                 onClick={() => handleDelete(subscriber._id)}
-                                                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950 rounded transition"
+                                                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800 rounded transition"
                                             >
                                                 <Trash2 size={14} />
                                                 Remove
