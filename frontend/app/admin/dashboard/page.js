@@ -7,7 +7,8 @@ import { useAuthStore, useToastStore } from "../../../lib/store";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import { DashboardSkeleton } from "../../../components/Skeletons";
-import { ShieldCheck, Users, FileText, Ban, AlertTriangle, ShieldAlert, Award } from "lucide-react";
+import { ShieldCheck, Users, FileText, Ban, AlertTriangle, ShieldAlert, Award, Mail } from "lucide-react";
+import Link from "next/link";
 
 const fetcher = (url) => api.get(url).then((res) => res.data);
 
@@ -76,14 +77,23 @@ function AdminDashboardContent() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
       {/* Title */}
-      <div className="border-b border-zinc-200 dark:border-zinc-800 pb-4">
-        <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
-          <ShieldCheck size={28} className="text-blue-500" />
-          Admin Console
-        </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-          Monitor user accounts, post metrics, and platform operations.
-        </p>
+      <div className="border-b border-zinc-200 dark:border-zinc-800 pb-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
+            <ShieldCheck size={28} className="text-blue-500" />
+            Admin Console
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+            Monitor user accounts, post metrics, and platform operations.
+          </p>
+        </div>
+        <Link
+          href="/admin/newsletter"
+          className="flex items-center gap-2 px-4 py-2 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 rounded-lg font-medium text-sm hover:opacity-90 transition whitespace-nowrap"
+        >
+          <Mail size={16} />
+          Newsletter
+        </Link>
       </div>
 
       {usersLoading || postsLoading ? (
@@ -176,11 +186,10 @@ function AdminDashboardContent() {
 
                       {/* Role Badge */}
                       <td className="py-4 px-6">
-                        <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full ${
-                          usr.role === "admin"
+                        <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full ${usr.role === "admin"
                             ? "bg-blue-50 text-blue-500 border border-blue-100 dark:bg-blue-950/20 dark:border-blue-900/30"
                             : "bg-zinc-50 text-zinc-500 border border-zinc-200 dark:bg-zinc-850 dark:border-zinc-800"
-                        }`}>
+                          }`}>
                           {usr.role}
                         </span>
                       </td>
@@ -188,23 +197,22 @@ function AdminDashboardContent() {
                       {/* Status */}
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full ${
-                            usr.isBanned
+                          <span className={`w-2 h-2 rounded-full ${usr.isBanned
                               ? "bg-rose-500"
                               : usr.isSuspended
-                              ? "bg-amber-500"
-                              : usr.isActive === false
-                              ? "bg-zinc-300 dark:bg-zinc-700"
-                              : "bg-emerald-500"
-                          }`} />
+                                ? "bg-amber-500"
+                                : usr.isActive === false
+                                  ? "bg-zinc-300 dark:bg-zinc-700"
+                                  : "bg-emerald-500"
+                            }`} />
                           <span className="text-xs font-semibold text-zinc-500">
                             {usr.isBanned
                               ? "Banned"
                               : usr.isSuspended
-                              ? "Suspended"
-                              : usr.isActive === false
-                              ? "Inactive"
-                              : "Active"}
+                                ? "Suspended"
+                                : usr.isActive === false
+                                  ? "Inactive"
+                                  : "Active"}
                           </span>
                         </div>
                       </td>

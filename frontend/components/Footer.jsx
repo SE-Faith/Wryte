@@ -2,17 +2,30 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import api from "../lib/api";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState({ type: "idle", message: "" });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim()) return;
 
-    setSubmitted(true);
-    setEmail("");
+    if (!email.trim()) {
+      setStatus({ type: "error", message: "Please enter your email address." });
+      return;
+    }
+
+    try {
+      await api.post("/newsletter/subscribe", { email });
+      setStatus({ type: "success", message: "Thanks for signing up." });
+      setEmail("");
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: error.response?.data?.message || "Unable to subscribe right now.",
+      });
+    }
   };
 
   return (
@@ -49,9 +62,14 @@ export default function Footer() {
                 Join
               </button>
             </div>
-            {submitted && (
-              <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-                Thanks for signing up.
+            {status.message && (
+              <p
+                className={`mt-2 text-xs ${status.type === "error"
+                    ? "text-rose-500"
+                    : "text-zinc-500 dark:text-zinc-400"
+                  }`}
+              >
+                {status.message}
               </p>
             )}
           </form>
