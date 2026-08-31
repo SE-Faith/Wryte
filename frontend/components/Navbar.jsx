@@ -33,68 +33,61 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-            Wryte<span className="text-blue-500">.</span>
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/90 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/90">
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
+          <span className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Wryte
           </span>
         </Link>
 
-        {/* Search Bar - Hidden on small mobile */}
         <form
           onSubmit={handleSearchSubmit}
-          className="hidden md:flex items-center max-w-md w-full relative bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-300"
+          className="hidden w-full max-w-md items-center rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 md:flex dark:border-zinc-800 dark:bg-zinc-900"
         >
-          <Search className="absolute left-4 text-zinc-400" size={18} />
+          <Search className="mr-2 h-4 w-4 text-zinc-400" />
           <input
             type="text"
-            placeholder="Search articles, tags, authors..."
+            placeholder="Search articles"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-transparent pl-11 pr-4 py-2 text-sm focus:outline-none text-zinc-800 dark:text-zinc-200"
+            className="w-full bg-transparent text-sm text-zinc-800 outline-none placeholder:text-zinc-400 dark:text-zinc-200"
           />
         </form>
 
-        {/* Right Side Navigation */}
-        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-          {/* Create Post button for authenticated users */}
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {currentUser && (
             <Link
               href="/posts/create"
-              className="hidden sm:flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              className="hidden items-center gap-2 rounded-full border border-zinc-200 bg-zinc-900 px-3 py-2 text-[11px] font-medium text-white sm:inline-flex dark:border-zinc-700 dark:bg-zinc-100 dark:text-zinc-900"
             >
               <PlusCircle size={14} />
-              Write Post
+              Write
             </Link>
           )}
 
-          {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900"
             aria-label="Toggle theme"
           >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
           {currentUser ? (
             <>
-              {/* Notification icon with count badge */}
               <Link
                 href="/notifications"
-                className="relative p-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
+                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900"
               >
-                <Bell size={18} />
+                <Bell size={16} />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-blue-500 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center border border-white dark:border-zinc-950 scale-90 animate-pulse">
+                  <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-zinc-900 px-1 text-[9px] font-medium text-white dark:bg-zinc-100 dark:text-zinc-900">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
               </Link>
 
-              {/* User Avatar & Dropdown Trigger */}
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -103,23 +96,19 @@ export default function Navbar() {
                   <img
                     src={currentUser.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                     alt={currentUser.name}
-                    className="w-8 h-8 rounded-full border border-zinc-200 dark:border-zinc-800 object-cover shadow-sm"
+                    className="h-8 w-8 rounded-full border border-zinc-200 object-cover dark:border-zinc-800"
                   />
                 </button>
 
-                {/* Dropdown Menu */}
                 {dropdownOpen && (
                   <>
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setDropdownOpen(false)}
-                    />
-                    <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-50 p-2 py-3 animate-fade-in">
-                      <div className="px-3 py-2 border-b border-zinc-100 dark:border-zinc-800 mb-2">
-                        <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-100 truncate">
+                    <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+                    <div className="absolute right-0 z-50 mt-3 w-56 rounded-xl border border-zinc-200 bg-white p-2 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                      <div className="mb-2 border-b border-zinc-100 px-3 py-2 dark:border-zinc-800">
+                        <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-50">
                           {currentUser.displayName || currentUser.name}
                         </p>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
                           {currentUser.email}
                         </p>
                       </div>
@@ -128,7 +117,7 @@ export default function Navbar() {
                         <Link
                           href="/admin/dashboard"
                           onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
                         >
                           <LayoutDashboard size={16} className="text-zinc-400" />
                           Admin Dashboard
@@ -138,7 +127,7 @@ export default function Navbar() {
                       <Link
                         href={`/profile/${currentUser._id}`}
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
                       >
                         <User size={16} className="text-zinc-400" />
                         My Profile
@@ -147,7 +136,7 @@ export default function Navbar() {
                       <Link
                         href="/bookmarks"
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
                       >
                         <Bookmark size={16} className="text-zinc-400" />
                         Bookmarks
@@ -156,7 +145,7 @@ export default function Navbar() {
                       <Link
                         href="/profile/edit"
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
                       >
                         <Settings size={16} className="text-zinc-400" />
                         Settings
@@ -164,7 +153,7 @@ export default function Navbar() {
 
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-lg transition-colors text-left"
+                        className="mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20"
                       >
                         <LogOut size={16} />
                         Logout
@@ -176,18 +165,17 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              {/* Unauthenticated Actions */}
               <Link
                 href="/login"
-                className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-colors"
+                className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-50"
               >
-                Log In
+                Log in
               </Link>
               <Link
                 href="/register"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
               >
-                Get Started
+                Get started
               </Link>
             </>
           )}

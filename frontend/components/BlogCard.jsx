@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useAuthStore, useToastStore } from "../lib/store";
 import api from "../lib/api";
-import { Heart, Bookmark, Eye, Calendar, User } from "lucide-react";
+import { Heart, Bookmark, Eye, User } from "lucide-react";
 
 export default function BlogCard({ post, onLikeToggle, onBookmarkToggle }) {
   const { user } = useAuthStore();
@@ -61,100 +61,83 @@ export default function BlogCard({ post, onLikeToggle, onBookmarkToggle }) {
     }
   };
 
-  // Safe category/author details extract
   const categoryName = post.category?.name || post.categoryName || "General";
   const authorName = post.author?.name || post.authorName || "Wryte Author";
-  const dateStr = post.createdAt ? new Date(post.createdAt).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }) : "Recent";
+  const dateStr = post.createdAt
+    ? new Date(post.createdAt).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })
+    : "Recent";
 
-  // Cover image fallback
-  const coverImage = post.image || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80";
+  const coverImage =
+    post.image ||
+    "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80";
 
   return (
-    <article className="group bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full hover:-translate-y-1">
-      {/* Cover Image Wrapper */}
-      <Link href={`/posts/${post._id}`} className="block relative aspect-video w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+      <Link href={`/posts/${post._id}`} className="block overflow-hidden bg-zinc-100 dark:bg-zinc-900">
         <img
           src={coverImage}
           alt={post.title}
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+          className="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
         />
-        {/* Category Badge */}
-        <span className="absolute top-4 left-4 bg-white/90 dark:bg-zinc-950/90 text-zinc-900 dark:text-zinc-50 text-[11px] font-bold px-3 py-1.5 rounded-full shadow-sm backdrop-blur-sm">
-          {categoryName}
-        </span>
       </Link>
 
-      {/* Main Content */}
-      <div className="p-5 flex flex-col flex-1 gap-3">
-        {/* Title */}
-        <h3 className="text-lg font-bold leading-snug text-zinc-800 dark:text-zinc-100 group-hover:text-blue-500 transition-colors line-clamp-2">
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
+          {categoryName}
+        </span>
+
+        <h3 className="text-lg font-semibold leading-snug text-zinc-900 dark:text-zinc-50">
           <Link href={`/posts/${post._id}`}>{post.title}</Link>
         </h3>
 
-        {/* Content Preview */}
         {post.content && (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+          <p className="line-clamp-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
             {post.content.replace(/<[^>]*>/g, "")}
           </p>
         )}
 
-        {/* Bottom Metadata */}
-        <div className="flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-4 mt-auto">
-          {/* Author info */}
-          <div className="flex items-center gap-2">
+        <div className="mt-auto flex items-center justify-between gap-3 border-t border-zinc-200 pt-3 dark:border-zinc-800">
+          <div className="flex min-w-0 items-center gap-2">
             {post.author?.avatar ? (
               <img
                 src={post.author.avatar}
                 alt={authorName}
-                className="w-6.5 h-6.5 rounded-full object-cover border border-zinc-200 dark:border-zinc-700"
+                className="h-6 w-6 rounded-full object-cover"
               />
             ) : (
-              <div className="w-6.5 h-6.5 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-100 text-zinc-400 dark:bg-zinc-800">
                 <User size={12} />
               </div>
             )}
-            <div className="text-[11.5px] font-medium text-zinc-600 dark:text-zinc-300 truncate max-w-[100px]">
-              {authorName}
+            <div className="min-w-0 text-[11px] text-zinc-500 dark:text-zinc-400">
+              <span className="block truncate">{authorName}</span>
+              <span className="block">{dateStr}</span>
             </div>
           </div>
 
-          {/* Social Stats & Action Toggles */}
-          <div className="flex items-center gap-3">
-            {/* Views counter */}
-            <span className="flex items-center gap-1 text-[11px] text-zinc-400">
-              <Eye size={12.5} />
+          <div className="flex items-center gap-3 text-[11px] text-zinc-500 dark:text-zinc-400">
+            <span className="flex items-center gap-1">
+              <Eye size={13} />
               {post.views || 0}
             </span>
-
-            {/* Like Action */}
             <button
               onClick={handleLike}
-              className={`flex items-center gap-1 text-[11px] font-semibold transition-colors ${
-                liked
-                  ? "text-rose-500"
-                  : "text-zinc-400 hover:text-rose-500 dark:hover:text-rose-400"
-              }`}
+              className={`flex items-center gap-1 ${liked ? "text-rose-500" : "text-zinc-500 dark:text-zinc-400"}`}
               aria-label="Like post"
             >
-              <Heart size={13.5} className={liked ? "fill-rose-500" : ""} />
+              <Heart size={13} className={liked ? "fill-rose-500" : ""} />
               {likesCount}
             </button>
-
-            {/* Bookmark Action */}
             <button
               onClick={handleBookmark}
-              className={`p-1.5 rounded-full border border-zinc-100 dark:border-zinc-800 transition-colors ${
-                bookmarked
-                  ? "bg-blue-50 border-blue-100 text-blue-500 dark:bg-blue-950/20 dark:border-blue-900/30"
-                  : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
-              }`}
+              className={`inline-flex items-center ${bookmarked ? "text-zinc-900 dark:text-zinc-50" : "text-zinc-500 dark:text-zinc-400"}`}
               aria-label="Bookmark post"
             >
-              <Bookmark size={13.5} className={bookmarked ? "fill-blue-500" : ""} />
+              <Bookmark size={13} className={bookmarked ? "fill-current" : ""} />
             </button>
           </div>
         </div>
