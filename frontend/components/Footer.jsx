@@ -7,8 +7,9 @@ export default function Footer() {
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <Link href="/" className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-              Wryte
+            <Link href="/" className="inline-flex items-center gap-1 text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+              <span>Wryte</span>
+              <span>.</span>
             </Link>
             <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
               A simple place to write and read.
@@ -29,7 +30,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 border-t border-zinc-200 pt-4 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-          © {new Date().getFullYear()} Wryte
+          © {new Date().getFullYear()} Wryte.
         </div>
       </div>
     </footer>
