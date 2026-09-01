@@ -23,7 +23,17 @@ export const suspendUser = async (req, res) => {
     try {
         const { userId } = req.params;
         const user = await adminService.suspendUser(userId);
-        res.status(200).json({ message: "User suspended successfully" });
+        res.status(200).json({ message: "User suspended successfully", user });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const unsuspendUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await adminService.unsuspendUser(userId);
+        res.status(200).json({ message: "User unsuspended successfully", user });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -33,8 +43,40 @@ export const banUser = async (req, res) => {
     try {
         const { userId } = req.params;
         const user = await adminService.banUser(userId);
-        res.status(200).json({ message: "User banned successfully" });
+        res.status(200).json({ message: "User banned successfully", user });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
+
+export const unbanUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await adminService.unbanUser(userId);
+        res.status(200).json({ message: "User unbanned successfully", user });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const updateRole = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { role } = req.body;
+        const user = await adminService.updateRole(userId, role);
+        res.status(200).json({ message: "User role updated successfully", user });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const deleteUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await adminService.deleteAccount(userId);
+        res.status(200).json({ message: "User deleted successfully", user });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+

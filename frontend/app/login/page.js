@@ -27,7 +27,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await api.post("/auth/login", { email, password });
-      
+
       if (res.data.success) {
         const { user, token } = res.data.result;
         login(user, token);

@@ -24,6 +24,8 @@ class AuthServices {
         // Create random 6-digit OTP for email verification
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         
+        console.log(` [OTP] Email: ${email} | Code: ${code} (email_verification)`);
+        
         // Save to database with 150s TTL
         await OTP.deleteMany({ email, type: "email_verification" });
         await OTP.create({
@@ -105,6 +107,8 @@ class AuthServices {
             ? `Your password reset code is: ${code}`
             : `Welcome to Wryte! Your email verification OTP is: ${code}`;
 
+        console.log(` [OTP] Email: ${email} | Code: ${code} (${type})`);
+
         await OTP.deleteMany({ email, type });
         await OTP.create({
             email,
@@ -173,4 +177,4 @@ class AuthServices {
     }
 }
 
-export default new AuthServices();
+export default new AuthServices();

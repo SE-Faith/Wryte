@@ -39,7 +39,7 @@ export default function RegisterPage() {
         // Authenticate user initially, then redirect to email verification page
         const { user, token } = res.data.user;
         login(user, token);
-        
+
         addToast("Account created successfully! An OTP has been sent to your email.", "success");
         router.push(`/verify-email?email=${encodeURIComponent(email)}`);
       } else {

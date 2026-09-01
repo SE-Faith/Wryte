@@ -57,24 +57,57 @@ async activateAccount(userId) {
 };
 
     async suspendUser(userId) {
-    const user = await User.findById(userId).select("-password");
-    if (!user) {
-        throw new Error("User not found");
-    }
-    user.isSuspended = true;
-    await user.save();
-    return user;
-};
+        const user = await User.findById(userId).select("-password");
+        if (!user) {
+            throw new Error("User not found");
+        }
+        user.isSuspended = true;
+        await user.save();
+        return user;
+    };
+
+    async unsuspendUser(userId) {
+        const user = await User.findById(userId).select("-password");
+        if (!user) {
+            throw new Error("User not found");
+        }
+        user.isSuspended = false;
+        await user.save();
+        return user;
+    };
 
     async banUser(userId) {
-    const user = await User.findById(userId).select("-password");
-    if (!user) {
-        throw new Error("User not found");
-    }
-    user.isBanned = true;
-    await user.save();
-    return user;
-};
+        const user = await User.findById(userId).select("-password");
+        if (!user) {
+            throw new Error("User not found");
+        }
+        user.isBanned = true;
+        await user.save();
+        return user;
+    };
+
+    async unbanUser(userId) {
+        const user = await User.findById(userId).select("-password");
+        if (!user) {
+            throw new Error("User not found");
+        }
+        user.isBanned = false;
+        await user.save();
+        return user;
+    };
+
+    async updateRole(userId, role) {
+        if (!["admin", "user"].includes(role)) {
+            throw new Error("Invalid role specified");
+        }
+        const user = await User.findById(userId).select("-password");
+        if (!user) {
+            throw new Error("User not found");
+        }
+        user.role = role;
+        await user.save();
+        return user;
+    };
 }
 
 export default new AdminService();

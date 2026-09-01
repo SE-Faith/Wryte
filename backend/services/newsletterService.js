@@ -42,3 +42,6 @@ class NewsletterService {
     async deleteSubscriber(subscriberId) {
         return await Newsletter.findByIdAndDelete(subscriberId);
     }
+}
+
+export default new NewsletterService();
