@@ -3,6 +3,7 @@ import OTP from "../models/OTP.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendMail } from "../utils/sendMail.js";
+import logger from "../utils/logger.js";
 
 class AuthServices {
     async register(data) {
@@ -24,7 +25,7 @@ class AuthServices {
         // Create random 6-digit OTP for email verification
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         
-        console.log(` [OTP] Email: ${email} | Code: ${code} (email_verification)`);
+        logger.info({ email, code, type: "email_verification" }, "[OTP] Email verification OTP code generated");
         
         // Save to database with 150s TTL
         await OTP.deleteMany({ email, type: "email_verification" });
@@ -38,7 +39,7 @@ class AuthServices {
         try {
             await sendMail(email, "Wryte - Verify Your Email", `Welcome to Wryte! Your email verification OTP is: ${code}`);
         } catch (err) {
-            console.log("Email verification code sending failed. Code is:", code);
+            logger.error({ err, email, code }, "Email verification code sending failed");
         }
 
         const token = jwt.sign(
@@ -107,7 +108,7 @@ class AuthServices {
             ? `Your password reset code is: ${code}`
             : `Welcome to Wryte! Your email verification OTP is: ${code}`;
 
-        console.log(` [OTP] Email: ${email} | Code: ${code} (${type})`);
+        logger.info({ email, code, type }, "[OTP] OTP code generated");
 
         await OTP.deleteMany({ email, type });
         await OTP.create({
@@ -120,7 +121,7 @@ class AuthServices {
         try {
             await sendMail(email, emailSubject, emailBody);
         } catch (err) {
-            console.log("Email code sending failed. Code is:", code);
+            logger.error({ err, email, code }, "Email code sending failed");
         }
         return { email, code };
     }

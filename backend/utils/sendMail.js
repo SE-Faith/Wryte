@@ -1,4 +1,5 @@
 import resend from "../config/mail.js";
+import logger from "./logger.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -13,12 +14,12 @@ export const sendMail = async (to, subject, text) => {
         });
 
         if (response.error) {
-            console.error("Resend API Error:", response.error);
+            logger.error({ error: response.error, to, subject }, "Resend API Email Delivery Failed");
         } else {
-            console.log(`Email sent successfully via Resend to ${to} (ID: ${response.data?.id || "sent"})`);
+            logger.info({ to, subject, emailId: response.data?.id }, "Email sent successfully via Resend");
         }
         return response;
     } catch (error) {
-        console.error("Error sending email via Resend:", error);
+        logger.error({ err: error, to, subject }, "Error sending email via Resend SDK");
     }
 };

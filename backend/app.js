@@ -19,10 +19,16 @@ import { xssSanitizer } from "./middlewares/xssSanitizer.js";
 import { globalLimiter } from "./middlewares/rateLimiter.js";
 import { generateCsrf, verifyCsrf } from "./middlewares/csrfMiddleware.js";
 
+import pinoHttp from "pino-http";
+import logger from "./utils/logger.js";
+
 // load environment variables
 dotenv.config();
 
 const app = express();
+
+// HTTP Request Logger Middleware
+app.use(pinoHttp({ logger, autoLogging: { ignore: (req) => req.url === '/api/health' } }));
 
 import authRoute from "./routes/authRoute.js";
 import profileRoute from "./routes/profileRoute.js";
@@ -75,7 +81,7 @@ let openapiSpecification;
 try {
     openapiSpecification = YAML.load(path.join(__dirname, "config", "openapi.yaml"));
 } catch (error) {
-    console.error(`Failed to load OpenAPI yaml spec: ${error.message}`);
+    logger.error({ err: error }, `Failed to load OpenAPI yaml spec: ${error.message}`);
 }
 
 // Serve Swagger UI documentation
@@ -110,6 +116,7 @@ app.use("/search", searchRoute);
 
 // Global 404 (Not Found) Handler
 app.use((req, res, next) => {
+    logger.warn({ path: req.originalUrl, method: req.method }, `Route not found - ${req.originalUrl}`);
     res.status(404).json({
         success: false,
         message: `Route not found - ${req.originalUrl}`
@@ -118,7 +125,7 @@ app.use((req, res, next) => {
 
 // Global Error Handler Middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    logger.error({ err, path: req.originalUrl, method: req.method }, err.message || "Internal Server Error");
     res.status(err.status || 500).json({
         success: false,
         message: err.message || "Internal Server Error",
