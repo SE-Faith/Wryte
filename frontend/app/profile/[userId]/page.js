@@ -9,7 +9,7 @@ import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import BlogCard from "../../../components/BlogCard";
 import { GridSkeleton } from "../../../components/Skeletons";
-import { UserCheck, UserPlus, FileText, Users, Link as LinkIcon, ShieldAlert } from "lucide-react";
+import { UserCheck, UserPlus, FileText, Users, Link as LinkIcon, ShieldAlert, Eye } from "lucide-react";
 
 const TwitterIcon = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-twitter">
@@ -212,6 +212,15 @@ function ProfileContent({ params }) {
               {profile.following?.length || 0}{" "}
               <span className="font-normal text-zinc-400">following</span>
             </span>
+
+            {/* Profile Views Metric - Visible strictly to Account Owner */}
+            {isSelf && (
+              <span className="font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 px-3 py-1 rounded-full text-xs">
+                <Eye size={13} className="text-zinc-500" />
+                {profile.profileViews || 0}{" "}
+                <span className="font-normal text-zinc-400">profile views</span>
+              </span>
+            )}
 
             {/* Social linkages */}
             {profile.socialLinks && (

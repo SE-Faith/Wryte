@@ -11,6 +11,18 @@ class AdminService {
     return user;
 };
 
+    async incrementProfileViewsAndGet(userId) {
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { $inc: { profileViews: 1 } },
+            { new: true }
+        ).select("-password");
+        if (!user) {
+            throw new Error("User not found");
+        }
+        return user;
+    };
+
 
     async deactivateAccount(userId) {
     const user = await User.findById(userId).select("-password");

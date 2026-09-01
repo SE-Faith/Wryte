@@ -55,7 +55,7 @@ export const deleteAccount = async (req, res) => {
 export const getPublicProfile = async (req, res) => {
     try {
         const { userId } = req.params;
-        const user = await adminService.getProfile(userId);
+        const user = await adminService.incrementProfileViewsAndGet(userId);
         res.status(200).json({ message: "Public profile retrieved successfully", user });
     } catch (error) {
         res.status(400).json({ message: error.message });

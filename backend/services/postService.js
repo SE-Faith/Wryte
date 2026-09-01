@@ -118,7 +118,14 @@ async getPosts(queryParams) {
 
     // get post by id
     async getPostById(postId) {
-        const post = await Post.findById(postId);
+        const post = await Post.findByIdAndUpdate(
+            postId,
+            { $inc: { views: 1 } },
+            { new: true }
+        )
+        .populate("author", "name avatar displayName bio")
+        .populate("category", "name")
+        .populate("tags", "name");
         return post;
     }
 
