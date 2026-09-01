@@ -72,4 +72,10 @@ postSchema.index({ status: 1, createdAt: -1 });
 postSchema.index({ category: 1, status: 1, createdAt: -1 });
 postSchema.index({ author: 1, status: 1, createdAt: -1 });
 
+// Compound Full-Text search index with weighted fields
+postSchema.index(
+    { title: "text", content: "text" },
+    { weights: { title: 10, content: 1 }, name: "PostFullTextIndex" }
+);
+
 export default mongoose.model("Post", postSchema);

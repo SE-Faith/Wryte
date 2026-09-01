@@ -35,6 +35,7 @@ import commentRoute from "./routes/commentRoute.js";
 import bookmarkRoute from "./routes/bookmarkRoute.js";
 import adminRoute from "./routes/adminRoute.js";
 import newsletterRoute from "./routes/newsletterRoute.js";
+import searchRoute from "./routes/searchRoute.js";
 
 // Enable CORS for frontend compatibility (e.g. Next.js on port 3000)
 app.use(cors({
@@ -105,6 +106,7 @@ app.use("/comment", commentRoute);
 app.use("/bookmark", bookmarkRoute);
 app.use("/admin", adminRoute);
 app.use("/newsletter", newsletterRoute);
+app.use("/search", searchRoute);
 
 // Global 404 (Not Found) Handler
 app.use((req, res, next) => {

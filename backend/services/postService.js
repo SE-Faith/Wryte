@@ -39,63 +39,72 @@ class PostService {
 
 async getPosts(queryParams) {
   // Pagination
-  const page =parseInt(queryParams.page) || 1;
-  const limit =parseInt(queryParams.limit) || 10;
+  const page = parseInt(queryParams.page) || 1;
+  const limit = parseInt(queryParams.limit) || 10;
   const skip = (page - 1) * limit;
 
-  // Search
-  const search = queryParams.search || "";
-
-  // Filters
+  // Search & Filters
+  const search = (queryParams.search || "").trim();
   const category = queryParams.category;
   const author = queryParams.author;
-
-  // Sorting
   const sort = queryParams.sort || "-createdAt";
 
-  // Build query
-  let query = { status: "published" };
+  // Base query filter (default to published unless status explicitly requested)
+  let query = { status: queryParams.status || "published" };
 
-  // Search
+  if (category) query.category = category;
+  if (author) query.author = author;
+
+  let posts = [];
+  let total = 0;
+
   if (search) {
-    query.$or = [
-      {
-        title: {
-          $regex: search,
-          $options: "i",
-        },
-      },
-      {
-        content: {
-          $regex: search,
-          $options: "i",
-        },
-      },
-    ];
+    // 1. Attempt Full-Text Search with score relevance
+    const textQuery = { ...query, $text: { $search: search } };
+    const textCount = await Post.countDocuments(textQuery);
+
+    if (textCount > 0) {
+      total = textCount;
+      posts = await Post.find(textQuery, { score: { $meta: "textScore" } })
+        .populate("author", "name avatar displayName bio")
+        .populate("category", "name")
+        .populate("tags", "name")
+        .skip(skip)
+        .limit(limit)
+        .sort({ score: { $meta: "textScore" }, createdAt: -1 })
+        .lean();
+    } else {
+      // 2. Hybrid Fallback: Partial regex search on title, subTitle, content
+      const regexQuery = {
+        ...query,
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { subTitle: { $regex: search, $options: "i" } },
+          { content: { $regex: search, $options: "i" } },
+        ],
+      };
+      total = await Post.countDocuments(regexQuery);
+      posts = await Post.find(regexQuery)
+        .populate("author", "name avatar displayName bio")
+        .populate("category", "name")
+        .populate("tags", "name")
+        .skip(skip)
+        .limit(limit)
+        .sort(sort)
+        .lean();
+    }
+  } else {
+    // Normal query without search term
+    total = await Post.countDocuments(query);
+    posts = await Post.find(query)
+      .populate("author", "name avatar displayName bio")
+      .populate("category", "name")
+      .populate("tags", "name")
+      .skip(skip)
+      .limit(limit)
+      .sort(sort)
+      .lean();
   }
-
-  // Category filter
-  if (category) {
-    query.category = category;
-  }
-
-  // Author filter
-  if (author) {
-    query.author = author;
-  }
-
-  // Fetch posts with references populated & lean JS object execution
-  const posts = await Post.find(query)
-    .populate("author", "name email avatar displayName")
-    .populate("category", "name")
-    .populate("tags", "name")
-    .skip(skip)
-    .limit(limit)
-    .sort(sort)
-    .lean();
-
-  // Count total posts
-  const total = await Post.countDocuments(query);
 
   return {
     page,

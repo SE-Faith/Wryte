@@ -71,4 +71,10 @@ const userSchema = new mongoose.Schema({
     timestamps:true
 });
 
+// Compound Full-Text search index on public profile fields (email excluded for privacy)
+userSchema.index(
+    { name: "text", displayName: "text", bio: "text" },
+    { weights: { name: 10, displayName: 8, bio: 2 }, name: "UserFullTextIndex" }
+);
+
 export default mongoose.model("User", userSchema);
