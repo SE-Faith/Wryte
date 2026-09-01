@@ -84,9 +84,17 @@ try {
     logger.error({ err: error }, `Failed to load OpenAPI yaml spec: ${error.message}`);
 }
 
-// Serve Swagger UI documentation
+// Serve Swagger UI documentation with collapsed category accordions
 if (openapiSpecification) {
-    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+    const swaggerUiOptions = {
+        swaggerOptions: {
+            docExpansion: "none", // Collapses all groups into neat category headers by default
+            filter: true,         // Enables a search/filter box at the top
+            defaultModelsExpandDepth: -1, // Collapses schemas section at the bottom for a clean view
+            displayRequestDuration: true
+        }
+    };
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification, swaggerUiOptions));
 }
 
 // connect to database

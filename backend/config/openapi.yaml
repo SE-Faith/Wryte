@@ -1,19 +1,45 @@
 openapi: 3.0.3
 info:
-  title: Wryte API
+  title: Wryte API Specification
   version: 1.0.0
   description: |
-    API for the Wryte blogging platform.
+    API documentation for the Wryte blogging platform.
 
-    Authentication uses a bearer token in the Authorization header.
-    For browser-based state-changing requests, the frontend also fetches a CSRF token from /api/csrf-token and sends it as x-csrf-token.
+    Authentication uses a Bearer JWT token in the Authorization header.
+    For browser-based state-changing requests, the frontend fetches a CSRF token from /api/csrf-token and includes it as x-csrf-token header.
 servers:
   - url: http://localhost:4000
     description: Local development server
+
+tags:
+  - name: System & Security
+    description: Health checks, system status, and CSRF token endpoints.
+  - name: Authentication
+    description: Registration, login, password changes, and OTP email verification.
+  - name: Posts & Stories
+    description: Article creation, feed querying, updates, and deletion.
+  - name: Categories
+    description: Category taxonomy creation, listing, updates, and deletion.
+  - name: Tags
+    description: Tag creation, listing, updates, and deletion.
+  - name: Search
+    description: Full-text search for articles and public user profiles.
+  - name: User Profiles
+    description: User profile updates, public profile metrics, and follow/unfollow operations.
+  - name: History & Interactions
+    description: Post likes, view logging, view history, and bookmarks.
+  - name: Admin Console
+    description: Administrative controls for user roles, suspension, banning, and deletion.
+  - name: Newsletter
+    description: Newsletter subscriptions and subscriber management.
+
 paths:
   /api/health:
     get:
+      tags:
+        - System & Security
       summary: Health check
+      description: Check database connectivity and API status.
       responses:
         '200':
           description: Server healthy
@@ -34,7 +60,10 @@ paths:
 
   /api/csrf-token:
     get:
+      tags:
+        - System & Security
       summary: Get a CSRF token
+      description: Generate and retrieve a CSRF token for state-changing requests.
       responses:
         '200':
           description: CSRF token generated
@@ -48,6 +77,8 @@ paths:
 
   /auth/register:
     post:
+      tags:
+        - Authentication
       summary: Register a new user
       requestBody:
         required: true
@@ -57,13 +88,15 @@ paths:
               $ref: '#/components/schemas/RegisterRequest'
       responses:
         '201':
-          description: User created
+          description: User registered successfully and OTP code generated.
         '400':
-          description: Invalid data or duplicate email
+          description: Invalid data or user already exists.
 
   /auth/login:
     post:
-      summary: Login a user
+      tags:
+        - Authentication
+      summary: Login user
       requestBody:
         required: true
         content:
@@ -72,23 +105,14 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: Successful login
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  token:
-                    type: string
-                  user:
-                    type: object
+          description: Successful authentication.
         '401':
-          description: Invalid credentials
+          description: Invalid email or password.
 
   /auth/change-password:
     post:
+      tags:
+        - Authentication
       summary: Change current user password
       security:
         - bearerAuth: []
@@ -98,17 +122,20 @@ paths:
           application/json:
             schema:
               type: object
+              required: [currentPassword, newPassword]
               properties:
-                oldPassword:
+                currentPassword:
                   type: string
                 newPassword:
                   type: string
       responses:
         '200':
-          description: Password updated
+          description: Password updated successfully.
 
   /auth/forgot-password:
     post:
+      tags:
+        - Authentication
       summary: Request password reset OTP
       requestBody:
         required: true
@@ -123,49 +150,55 @@ paths:
                   format: email
       responses:
         '200':
-          description: Reset email sent
+          description: Reset OTP code sent.
 
   /auth/reset-password:
     post:
-      summary: Reset password using a verification code
+      tags:
+        - Authentication
+      summary: Reset password using verification OTP
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [token, newPassword]
               properties:
-                email:
-                  type: string
-                otp:
+                token:
                   type: string
                 newPassword:
                   type: string
       responses:
         '200':
-          description: Password reset
+          description: Password reset successfully.
 
   /auth/verify-email:
     post:
-      summary: Verify user email with OTP
+      tags:
+        - Authentication
+      summary: Verify email address with OTP
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [email, code]
               properties:
                 email:
                   type: string
-                otp:
+                code:
                   type: string
       responses:
         '200':
-          description: Email verified
+          description: Email verified successfully.
 
   /post/all:
     get:
-      summary: Get posts feed
+      tags:
+        - Posts & Stories
+      summary: Get blog posts feed with full-text search and filtering
       parameters:
         - in: query
           name: page
@@ -176,26 +209,31 @@ paths:
           name: limit
           schema:
             type: integer
-            default: 6
+            default: 10
         - in: query
           name: search
           schema:
             type: string
+            description: Full-text search keyword
         - in: query
           name: category
           schema:
             type: string
+            description: Category ID filter
+        - in: query
+          name: author
+          schema:
+            type: string
+            description: Author User ID filter
       responses:
         '200':
-          description: List of posts
-          content:
-            application/json:
-              schema:
-                type: object
+          description: Paginated posts list sorted by relevance or recency.
 
   /post/create:
     post:
-      summary: Create a new post
+      tags:
+        - Posts & Stories
+      summary: Create a new blog post
       security:
         - bearerAuth: []
       requestBody:
@@ -206,11 +244,13 @@ paths:
               $ref: '#/components/schemas/PostInput'
       responses:
         '201':
-          description: Post created
+          description: Post created successfully.
 
   /post/{postId}:
     get:
-      summary: Get a single post
+      tags:
+        - Posts & Stories
+      summary: Get single post by ID and increment post views
       parameters:
         - in: path
           name: postId
@@ -219,9 +259,11 @@ paths:
             type: string
       responses:
         '200':
-          description: Post found
+          description: Post details with populated references.
     put:
-      summary: Update a post
+      tags:
+        - Posts & Stories
+      summary: Update a post (Author or Admin)
       security:
         - bearerAuth: []
       parameters:
@@ -238,9 +280,11 @@ paths:
               $ref: '#/components/schemas/PostInput'
       responses:
         '200':
-          description: Post updated
+          description: Post updated successfully.
     delete:
-      summary: Delete a post
+      tags:
+        - Posts & Stories
+      summary: Delete a post (Author or Admin)
       security:
         - bearerAuth: []
       parameters:
@@ -251,20 +295,53 @@ paths:
             type: string
       responses:
         '200':
-          description: Post deleted
+          description: Post deleted successfully.
 
   /category/all:
     get:
-      summary: List categories
+      tags:
+        - Categories
+      summary: List all categories
       responses:
         '200':
-          description: Category list
+          description: Category list retrieved.
 
   /category/create:
     post:
-      summary: Create category
+      tags:
+        - Categories
+      summary: Create a new category (Admin only)
       security:
         - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, description]
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Category created successfully.
+
+  /category/{categoryId}:
+    put:
+      tags:
+        - Categories
+      summary: Update a category (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: categoryId
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -274,44 +351,39 @@ paths:
               properties:
                 name:
                   type: string
-      responses:
-        '201':
-          description: Category created
-
-  /tag:
-    get:
-      summary: List all tags
+                description:
+                  type: string
       responses:
         '200':
-          description: Tag list
-
-  /profile/get:
-    get:
-      summary: Get current authenticated user profile
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: User profile
-
-  /profile/get/{userId}:
-    get:
-      summary: Get a public user profile
+          description: Category updated.
+    delete:
+      tags:
+        - Categories
+      summary: Delete a category (Admin only)
       security:
         - bearerAuth: []
       parameters:
         - in: path
-          name: userId
+          name: categoryId
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Profile data
+          description: Category deleted.
 
-  /profile/update:
-    put:
-      summary: Update current user's profile
+  /tag:
+    get:
+      tags:
+        - Tags
+      summary: List all tags
+      responses:
+        '200':
+          description: List of tags.
+    post:
+      tags:
+        - Tags
+      summary: Create a tag (Admin only)
       security:
         - bearerAuth: []
       requestBody:
@@ -320,12 +392,141 @@ paths:
           application/json:
             schema:
               type: object
+              required: [name, description]
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Tag created.
+
+  /tag/{tagId}:
+    put:
+      tags:
+        - Tags
+      summary: Update a tag (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: tagId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
       responses:
         '200':
-          description: Profile updated
+          description: Tag updated.
+    delete:
+      tags:
+        - Tags
+      summary: Delete a tag (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: tagId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tag deleted.
+
+  /search/people:
+    get:
+      tags:
+        - Search
+      summary: Full-text search for users/people
+      description: Search public user profiles by name, displayName, or bio. Email fields are excluded for privacy.
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+            description: Search term
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: People search results sorted by relevance.
+
+  /profile/get:
+    get:
+      tags:
+        - User Profiles
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile details.
+
+  /profile/get/{userId}:
+    get:
+      tags:
+        - User Profiles
+      summary: Get public user profile and increment profileViews
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Public user profile with follower/following details.
+
+  /profile/update:
+    put:
+      tags:
+        - User Profiles
+      summary: Update current user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                avatar:
+                  type: string
+                bio:
+                  type: string
+                socialLinks:
+                  type: object
+      responses:
+        '200':
+          description: Profile updated.
 
   /profile/follow/{userId}:
     post:
+      tags:
+        - User Profiles
       summary: Follow a user
       security:
         - bearerAuth: []
@@ -337,10 +538,12 @@ paths:
             type: string
       responses:
         '200':
-          description: Follow successful
+          description: Followed user.
 
   /profile/unfollow/{userId}:
     post:
+      tags:
+        - User Profiles
       summary: Unfollow a user
       security:
         - bearerAuth: []
@@ -352,29 +555,13 @@ paths:
             type: string
       responses:
         '200':
-          description: Unfollow successful
-
-  /profile/followers:
-    get:
-      summary: Get current user's followers
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: List of followers
-
-  /profile/following:
-    get:
-      summary: Get current user's following list
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Following list
+          description: Unfollowed user.
 
   /profile/view/{postId}:
     post:
-      summary: Log a post view
+      tags:
+        - History & Interactions
+      summary: Log a post view in user history
       security:
         - bearerAuth: []
       parameters:
@@ -385,28 +572,34 @@ paths:
             type: string
       responses:
         '200':
-          description: View logged
+          description: Post view logged.
 
   /profile/history/views:
     get:
-      summary: Get viewed posts
+      tags:
+        - History & Interactions
+      summary: Get viewed posts history
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: View history
+          description: List of viewed posts.
 
   /profile/history/likes:
     get:
-      summary: Get liked posts
+      tags:
+        - History & Interactions
+      summary: Get liked posts history
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: Liked history
+          description: List of liked posts.
 
   /like/like/{postId}:
     post:
+      tags:
+        - History & Interactions
       summary: Like a post
       security:
         - bearerAuth: []
@@ -418,10 +611,12 @@ paths:
             type: string
       responses:
         '200':
-          description: Post liked
+          description: Post liked.
 
   /like/unlike/{postId}:
     post:
+      tags:
+        - History & Interactions
       summary: Unlike a post
       security:
         - bearerAuth: []
@@ -433,10 +628,12 @@ paths:
             type: string
       responses:
         '200':
-          description: Post unliked
+          description: Post unliked.
 
   /bookmark/post/{postId}:
     post:
+      tags:
+        - History & Interactions
       summary: Bookmark a post
       security:
         - bearerAuth: []
@@ -448,8 +645,10 @@ paths:
             type: string
       responses:
         '200':
-          description: Post bookmarked
+          description: Post bookmarked.
     delete:
+      tags:
+        - History & Interactions
       summary: Remove a bookmark
       security:
         - bearerAuth: []
@@ -461,29 +660,24 @@ paths:
             type: string
       responses:
         '200':
-          description: Bookmark removed
-
-  /notification:
-    get:
-      summary: Get notifications for current user
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Notifications list
+          description: Bookmark removed.
 
   /admin/all:
     get:
-      summary: List all users as admin
+      tags:
+        - Admin Console
+      summary: Get all registered users (Admin only)
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: User list
+          description: List of user accounts.
 
   /admin/user/{userId}:
     get:
-      summary: Get a single user record as admin
+      tags:
+        - Admin Console
+      summary: Get user details by ID (Admin only)
       security:
         - bearerAuth: []
       parameters:
@@ -494,11 +688,56 @@ paths:
             type: string
       responses:
         '200':
-          description: User data
+          description: User record details.
+    delete:
+      tags:
+        - Admin Console
+      summary: Delete user account (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User account deleted.
+
+  /admin/role/{userId}:
+    put:
+      tags:
+        - Admin Console
+      summary: Update user role (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role:
+                  type: string
+                  enum: [user, admin]
+      responses:
+        '200':
+          description: User role updated.
 
   /admin/suspend/{userId}:
     put:
-      summary: Suspend a user
+      tags:
+        - Admin Console
+      summary: Suspend user account (Admin only)
       security:
         - bearerAuth: []
       parameters:
@@ -509,11 +748,30 @@ paths:
             type: string
       responses:
         '200':
-          description: User suspended
+          description: User suspended.
+
+  /admin/unsuspend/{userId}:
+    put:
+      tags:
+        - Admin Console
+      summary: Unsuspend user account (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User unsuspended.
 
   /admin/ban/{userId}:
     put:
-      summary: Ban a user
+      tags:
+        - Admin Console
+      summary: Ban user account (Admin only)
       security:
         - bearerAuth: []
       parameters:
@@ -524,7 +782,52 @@ paths:
             type: string
       responses:
         '200':
-          description: User banned
+          description: User banned.
+
+  /admin/unban/{userId}:
+    put:
+      tags:
+        - Admin Console
+      summary: Unban user account (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User unbanned.
+
+  /newsletter/admin/subscribers:
+    get:
+      tags:
+        - Newsletter
+      summary: List all newsletter subscribers (Admin only)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of subscribers.
+
+  /newsletter/admin/subscribers/{subscriberId}:
+    delete:
+      tags:
+        - Newsletter
+      summary: Remove subscriber (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: subscriberId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Subscriber removed.
 
 components:
   securitySchemes:
@@ -532,6 +835,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
   schemas:
     RegisterRequest:
       type: object
@@ -563,9 +867,9 @@ components:
       properties:
         title:
           type: string
-        content:
+        subTitle:
           type: string
-        image:
+        content:
           type: string
         category:
           type: string
@@ -573,162 +877,18 @@ components:
           type: array
           items:
             type: string
+        image:
+          type: string
+        status:
+          type: string
+          enum: [draft, published, scheduled]
 
     Error:
       type: object
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-
-              type: object
-              properties:
-                title:
-                  type: string
-                  example: "Unlocking Creativity: An Advanced Guide"
-                content:
-                  type: string
-                  example: "This updated version goes deeper into creative exercises..."
-                tags:
-                  type: array
-                  items:
-                    type: string
-                  example: ["creativity", "advanced"]
-      responses:
-        '200':
-          description: Post updated successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Post'
-        '401':
-          description: Unauthorized access.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: Forbidden to edit others' posts.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Post not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    delete:
-      summary: Delete a post
-      description: Permanently remove a blog post. Only the original author can delete.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: The post ID
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Post deleted successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: "Post deleted successfully"
-        '401':
-          description: Unauthorized access.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: Forbidden to delete others' posts.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Post not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-  schemas:
-    Post:
-      type: object
-      required:
-        - id
-        - title
-        - content
-        - author
-      properties:
-        id:
-          type: string
-          example: "60b9f5f08819c900155b9abc"
-        title:
-          type: string
-          example: "Unlocking Creativity: A Beginner's Guide"
-        content:
-          type: string
-          example: "In this post we explore the psychological barriers to creativity..."
-        author:
-          type: object
-          properties:
-            id:
-              type: string
-              example: "60b9f5f08819c900155b9abc"
-            name:
-              type: string
-              example: "Jane Doe"
-        tags:
-          type: array
-          items:
-            type: string
-          example: ["creativity", "writing", "guide"]
-        createdAt:
-          type: string
-          format: date-time
-          example: "2026-05-24T15:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2026-05-24T15:00:00.000Z"
-    Error:
-      type: object
-      required:
-        - success
-        - message
       properties:
         success:
           type: boolean
           example: false
         message:
           type: string
-          example: "An unexpected error occurred"
-        errors:
-          type: array
-          items:
-            type: string
-          example: ["Field 'email' is invalid"]
+          example: "An error occurred"
