@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Notification from "../models/Notification.js";
+import { invalidateCache } from "../config/redis.js";
 
 class FollowService {
     // Follow a user
@@ -26,6 +27,7 @@ class FollowService {
 
         await follower.save();
         await target.save();
+        await invalidateCache("people-search:*");
 
         // Trigger follow notification
         try {
@@ -61,6 +63,7 @@ class FollowService {
 
         await follower.save();
         await target.save();
+        await invalidateCache("people-search:*");
 
         return { follower, target };
     }

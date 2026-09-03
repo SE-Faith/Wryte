@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import { cacheGet, cacheSet } from "../config/redis.js";
 
 class SearchService {
     async searchPeople(queryParams) {
@@ -10,6 +11,10 @@ class SearchService {
         if (!search) {
             return { page, limit, total: 0, totalPages: 0, people: [] };
         }
+
+        const cacheKey = `people-search:${JSON.stringify({ page, limit, search })}`;
+        const cachedResult = await cacheGet(cacheKey);
+        if (cachedResult) return cachedResult;
 
         // Only search active, non-banned users
         const baseQuery = { isActive: true, isBanned: { $ne: true } };
@@ -48,13 +53,15 @@ class SearchService {
                 .lean();
         }
 
-        return {
+        const result = {
             page,
             limit,
             total,
             totalPages: Math.ceil(total / limit),
             people
         };
+        await cacheSet(cacheKey, result, 60);
+        return result;
     }
 }
 

@@ -1,10 +1,19 @@
 // config/rateLimiter.js
 import rateLimit from "express-rate-limit";
+import { RedisStore } from "rate-limit-redis";
+import redisClient, { redisEnabled } from "../config/redis.js";
+
+const redisStore = redisEnabled
+    ? new RedisStore({
+        sendCommand: (...args) => redisClient.sendCommand(args)
+    })
+    : undefined;
 
 // Global limiter: applies to general traffic
 export const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 2000, // limit each IP to 2000 requests per 15 minutes
+    store: redisStore,
     message: {
         success: false,
         message: "Too many requests from this IP, please try again later."
@@ -17,6 +26,7 @@ export const globalLimiter = rateLimit({
 export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 authentication requests per 15 minutes
+    store: redisStore,
     message: {
         success: false,
         message: "Too many login/registration attempts. Please try again after 15 minutes."

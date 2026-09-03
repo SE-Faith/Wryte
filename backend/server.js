@@ -3,6 +3,9 @@ import http from "http";
 import app from "./app.js";
 import "./config/cron.js";
 import { Server } from "socket.io";
+import { connectRedis } from "./config/redis.js";
+
+await connectRedis();
 
 const server = http.createServer(app);
 

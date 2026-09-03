@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import { invalidateCache } from "../config/redis.js";
 
 class ProfileService {
     constructor() {}
@@ -14,6 +15,7 @@ class ProfileService {
         user.bio = profileData.bio || user.bio;
         user.socialLinks = profileData.socialLinks || user.socialLinks;
         await user.save();
+        await invalidateCache("people-search:*");
         
         return;
 

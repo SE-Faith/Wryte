@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Tag from "../models/Tags.js";
 import Post from "../models/Post.js";
+import { cacheGet, cacheSet, invalidateCache } from "../config/redis.js";
 
 class PostService {
     // Helper to find or create tags by name, returning their ObjectIds
@@ -34,6 +35,7 @@ class PostService {
         }
         const post = new Post(postData);
         await post.save();
+        await invalidateCache("posts:*");
         return post;
     }
 
@@ -48,6 +50,9 @@ async getPosts(queryParams) {
   const category = queryParams.category;
   const author = queryParams.author;
   const sort = queryParams.sort || "-createdAt";
+    const cacheKey = `posts:${JSON.stringify({ page, limit, search, category, author, sort, status: queryParams.status || "published" })}`;
+    const cachedResult = await cacheGet(cacheKey);
+    if (cachedResult) return cachedResult;
 
   // Base query filter (default to published unless status explicitly requested)
   let query = { status: queryParams.status || "published" };
@@ -106,13 +111,15 @@ async getPosts(queryParams) {
       .lean();
   }
 
-  return {
+    const result = {
     page,
     limit,
     total,
     totalPages: Math.ceil(total / limit),
     posts,
   };
+    await cacheSet(cacheKey, result, 60);
+    return result;
 };
 
 
@@ -142,6 +149,7 @@ async getPosts(queryParams) {
             post.tags = await this.resolveTags(postData.tags);
         }
         await post.save();
+        await invalidateCache("posts:*");
         return post;
     }
 
@@ -152,6 +160,7 @@ async getPosts(queryParams) {
             throw new Error("Post not found");
         }
         await post.deleteOne();
+        await invalidateCache("posts:*");
         return post;
     }
 
@@ -163,6 +172,7 @@ async getPosts(queryParams) {
         }
         post.status = "draft";
         await post.save();
+        await invalidateCache("posts:*");
         return post;
     }
 
@@ -170,6 +180,7 @@ async getPosts(queryParams) {
     async createDraft(postData) {
         const post = new Post(postData);
         await post.save();
+        await invalidateCache("posts:*");
         return post;
     }
     // schedule post
@@ -180,6 +191,7 @@ async getPosts(queryParams) {
         }
         post.status = "scheduled";
         await post.save();
+        await invalidateCache("posts:*");
         return post;
     }
     

@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import { invalidateCache } from "../config/redis.js";
 
 class AdminService {
     constructor() {}
@@ -31,6 +32,7 @@ class AdminService {
     }
     user.isActive = false;
     await user.save();
+    await invalidateCache("people-search:*");
     return user;
 };
 
@@ -42,6 +44,7 @@ async activateAccount(userId) {
     }
     user.isActive = true;
     await user.save();
+    await invalidateCache("people-search:*");
     return user;
 };
 
@@ -52,6 +55,7 @@ async activateAccount(userId) {
         throw new Error("User not found");
     }
     await user.deleteOne();
+    await invalidateCache("people-search:*");
     return user;
 };
 
@@ -95,6 +99,7 @@ async activateAccount(userId) {
         }
         user.isBanned = true;
         await user.save();
+        await invalidateCache("people-search:*");
         return user;
     };
 
@@ -105,6 +110,7 @@ async activateAccount(userId) {
         }
         user.isBanned = false;
         await user.save();
+        await invalidateCache("people-search:*");
         return user;
     };
 
